@@ -1,4 +1,4 @@
-module.exports = function(creep) {
+var warrior = function(creep) {
     var room1 = "[room W17N5]";
     var room2 = "[room W17N4]";
     var room3 = "[room W18N4]";
@@ -23,4 +23,16 @@ module.exports = function(creep) {
             console.log("Global Control Level is not enough.");
         }
     };
+};
+
+var spawn = function(spawn) {
+    console.log('Spawning a warrior.');
+    var currentTime = Date.now();
+    var warriorName = "Warrior" + currentTime;
+    spawn1.createCreep([RANGED_ATTACK, MOVE], warriorName, {role: 'warrior', born: currentTime});
+};
+
+module.exports = {
+    warrior: warrior,
+    spawn: spawn
 }
