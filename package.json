@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "lib": "rimraf lib && babel src -d lib",
-    "bundle": "browserify main.js -o bundle.js"
+    "bundle": "browserify main.js -o bundle.js && replace -q 'undefined' 'this' bundle.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   "devDependencies": {
     "babel": "^5.8.23",
     "babelify": "^6.3.0",
+    "replace": "^0.3.0",
     "rimraf": "^2.4.3"
   }
 }
