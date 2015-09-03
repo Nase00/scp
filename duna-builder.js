@@ -4,11 +4,11 @@ var build = function(creep, availableEnergy) {
     // } else {
         creep.say('B');
         if (creep.carry.energy <= 1) {
-            creep.moveTo(availableEnergy[availableEnergy.length - 1]);
-            availableEnergy[availableEnergy.length - 1].transferEnergy(creep);
-        } else {
-            doWork();
-        }
+    		creep.moveTo(availableEnergy[availableEnergy.length - 1]);
+    		availableEnergy[availableEnergy.length - 1].transferEnergy(creep);
+    	} else {
+    	    doWork();
+    	}
     // }
     
     function doWork() {
@@ -28,21 +28,20 @@ var build = function(creep, availableEnergy) {
             creep.moveTo(structuresNeedsRepair[0]);
             creep.repair(structuresNeedsRepair[0]);
         } else if (constructionSites.length) {
-            creep.moveTo(constructionSites[0]);
-            creep.build(constructionSites[0]);
-        } else {
-            creep.moveTo(creep.room.controller);
+		    creep.moveTo(constructionSites[0]);
+		    creep.build(constructionSites[0]);
+		} else {
+		    creep.moveTo(creep.room.controller);
             creep.upgradeController(creep.room.controller);
-        }
+		}
     };
 };
 
 var spawn = function(spawn) {
-    console.log('Spawning a builder.');
     var currentTime = Date.now();
-    var builderName = 'Builder' + currentTime;
+    var builderName = 'Duna Builder' + currentTime;
     var willRepair = currentTime % 3;
-    spawn.createCreep([CARRY, CARRY, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE], builderName, {role: 'builder', born: currentTime, willRepair: willRepair});
+    spawn.createCreep([CARRY, CARRY, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], builderName, {role: 'd_builder', born: currentTime, willRepair: willRepair});
 };
 
 module.exports = {

@@ -11,11 +11,11 @@ var harvest = function(creep, energyStores) {
 };
 
 var spawn = function(spawn) {
-    console.log('Spawning a harvester.');
+    console.log('Spawning a d_harvester.');
     var currentTime =  Date.now();
     var source = Math.floor(Math.random() * (1 - 0 + 1));
     var name = 'Harvester' + currentTime + "source" + source;
-    spawn.createCreep([CARRY, CARRY, CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE], name, {role: 'harvester', born: currentTime, source: source });
+    spawn.createCreep([CARRY, WORK, WORK, MOVE], name, {role: 'harvester', born: currentTime, source: source });
 };
 
 module.exports = {
