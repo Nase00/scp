@@ -1,14 +1,7 @@
-export const units = {
-  harvesters: 11,
-  scouts: 2,
-  builders: 11,
-  managers: 1,
-  guards: 9,
-  warriors: 0
-};
-
 export const rooms = {
-  W17N5: "[W17N5]"
+  W17N5: "[W17N5]",
+  W17N3: "[W17N3]",
+  W18N4: "[W18N4]"
 };
 
 export const spawns = [
@@ -18,40 +11,35 @@ export const spawns = [
 
 export const wallHealth = 6000;
 
-export let getEnergyStores = (room) => {
-  let energyStores = [];
-  let fullEnergyStores = [];
-  room.find(FIND_STRUCTURES, {
-    filter: (structure) => {
-      if (structure.energy < structure.energyCapacity) {
-        energyStores.push(i);
-      } else if (structure.energy > 0 && structure.structureType == 'extension' || structure.structureType == 'spawn') {
-        fullEnergyStores.push(structure);
-      }
+export const currentTime =  Date.now();
+
+export const unitTypeConstants = {
+  harvester: {
+    bodyParts: [CARRY, CARRY, CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE],
+    name: 'harvester',
+    memory: {
+      role: 'harvester' + currentTime,
+      born: currentTime,
+      source: currentTime % 2
     }
-  });
-
-  return {
-    needsEnergy: energystores,
-    hasEnergy: fullEnergyStores
-  };
-}
-
-export let energyForRecharging = getEnergyStores.needsEnergy;
-export let storageForEnergy = getEnergyStores.fullEnergyStores
-
-export let structuresNeedingRepair = (room) => {
-  let structuresNeedingRepair = [];
-  creep.room.find(FIND_STRUCTURES, {
-    filter: (structure) => {
-      if (structure.hitsMax > 1 && structure.hits < wallHealth) {
-        structuresNeedingRepair.push(i);
-      }
+  },
+  worker: {
+    bodyParts: [CARRY, CARRY, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE],
+    name: 'worker' + currentTime,
+    memory: {
+      role: '',
+      born: currentTime,
+      source: currentTime % 2
     }
-  });
-  return structuresNeedingRepair;
-}
-
-export let structuresNeedingConstruction = (room) => {
-  return room.find(FIND_CONSTRUCTION_SITES);
-}
+  },
+  guard: {
+    bodyParts: [RANGED_ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE],
+    name: '',
+    memory: {
+      role: '',
+      born: currentTime,
+      source: currentTime % 2,
+      idlePos: "28, 29"
+    }
+  }
+};
