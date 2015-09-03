@@ -1,5 +1,5 @@
 import defend from './defend';
-import harvest from './harvest';
+import collect from './collect';
 import recharge from './recharge';
 import upkeep from './upkeep';
 import spawn from './spawn';
@@ -8,7 +8,7 @@ import war from './war';
 
 export {
 	defend,
-	harvest,
+	collect,
 	recharge,
 	upkeep,
 	spawn,

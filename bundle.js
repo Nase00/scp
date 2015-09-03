@@ -1,13 +1,13 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
 var rooms = {
-  W17N5: "[W17N5]",
-  W17N3: "[W17N3]",
-  W18N4: "[W18N4]"
+  W17N3: 'W17N3',
+  W17N4: 'W17N4',
+  W18N4: 'W18N4'
 };
 
 exports.rooms = rooms;
@@ -52,12 +52,24 @@ var unitTypeConstants = {
 };
 exports.unitTypeConstants = unitTypeConstants;
 },{}],2:[function(require,module,exports){
-// Load prototypes
+// Load queries
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _queriesEnergyStorage = require('./queries/energy-storage');
+
+var _queriesEnergyStorage2 = _interopRequireDefault(_queriesEnergyStorage);
+
+var _queriesEnergySources = require('./queries/energy-sources');
+
+var _queriesEnergySources2 = _interopRequireDefault(_queriesEnergySources);
+
+// Load prototypes
 
 var _tasks = require('./tasks');
 
@@ -73,9 +85,13 @@ exports['default'] = function () {
     }
   }
 
+  // Execute queries
+  (0, _queriesEnergyStorage2['default'])();
+  (0, _queriesEnergySources2['default'])();
+
   // Execute prototypes
   (0, _tasks.defend)();
-  (0, _tasks.harvest)();
+  (0, _tasks.collect)();
   (0, _tasks.recharge)();
   (0, _tasks.upkeep)();
   (0, _tasks.spawn)();
@@ -90,7 +106,7 @@ exports['default'] = function () {
     var creep = Game.creeps[_name];
     switch (creep.memory.role) {
       case 'harvester':
-        creep.harvest();
+        creep.collect();
         break;
       // case 'forager':
       //   creep.forage();
@@ -108,14 +124,14 @@ exports['default'] = function () {
       // case 'warrior':
       //   creep.war();
       //   break;
-      default:
-        console.log('Creep lacks recognized role!');
+      // default:
+      //   console.log('Creep lacks recognized role!');
     }
   }
 };
 
 module.exports = exports['default'];
-},{"./rooms":10,"./tasks":13}],3:[function(require,module,exports){
+},{"./queries/energy-sources":5,"./queries/energy-storage":6,"./rooms":10,"./tasks":13}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -154,44 +170,74 @@ exports['default'] = function (room) {
 
 module.exports = exports['default'];
 },{"../config":1}],5:[function(require,module,exports){
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+Object.defineProperty(exports, '__esModule', {
+	value: true
 });
 
-exports["default"] = function (room) {
-  return room.find(FIND_SOURCES);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _config = require('../config');
+
+var _config2 = _interopRequireDefault(_config);
+
+exports['default'] = function () {
+	var _loop = function (room) {
+		Memory.rooms[room].sources = [];
+
+		Game.rooms[room].find(FIND_SOURCES, {
+			filter: function filter(source) {
+				Memory.rooms[room].sources.push(source);
+			}
+		});
+	};
+
+	for (var room in _config2['default']) {
+		_loop(room);
+	}
 };
 
-module.exports = exports["default"];
-},{}],6:[function(require,module,exports){
+module.exports = exports['default'];
+},{"../config":1}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-exports['default'] = function (room) {
-  var stores = {
-    energyStores: [],
-    fullEnergyStores: []
-  };
-  room.find(FIND_STRUCTURES, {
-    filter: function filter(structure) {
-      var energyStorageTypes = ['extension', 'storage', 'spawn'];
-      if (structure.energy < structure.energyCapacity) {
-        stores.energyStores.push(structure);
-      } else if (energyStorageTypes.indexOf(structure.structureType) != -1) {
-        stores.fullEnergyStores.push(structure);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _config = require('../config');
+
+var _config2 = _interopRequireDefault(_config);
+
+exports['default'] = function () {
+  var _loop = function (room) {
+    Memory.rooms[room].stores = {
+      energyStores: [],
+      fullEnergyStores: []
+    };
+
+    Game.rooms[room].find(FIND_STRUCTURES, {
+      filter: function filter(structure) {
+        var energyStorageTypes = ['extension', 'storage', 'spawn'];
+        if (structure.energy < structure.energyCapacity) {
+          Memory.rooms[room].stores.energyStores.push(structure);
+        } else if (energyStorageTypes.indexOf(structure.structureType) != -1) {
+          Memory.rooms[room].stores.fullEnergyStores.push(structure);
+        }
       }
-    }
-  });
-  return stores;
+    });
+  };
+
+  for (var room in _config2['default']) {
+    _loop(room);
+  }
 };
 
 module.exports = exports['default'];
-},{}],7:[function(require,module,exports){
+},{"../config":1}],7:[function(require,module,exports){
 // Secondary room
 
 "use strict";
@@ -294,6 +340,44 @@ exports.W17N3 = _W17N32['default'];
 exports.W17N4 = _W17N42['default'];
 exports.W18N4 = _W18N42['default'];
 },{"./W17N3":7,"./W17N4":8,"./W18N4":9}],11:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+exports['default'] = function () {
+  Creep.prototype.collect = function () {
+    var source = this.memory.source || 0;
+    var room = this.room.name; //.toString().match(/.\d{2}.\d/)[0];
+    console.log(this.say('Collecting'));
+    if (this.carry.energy < this.carryCapacity) {
+      var sources = Memory.rooms[room].sources;
+      console.log(sources);
+
+      this.moveTo(sources[this.memory.source]);
+      this.harvest(sources[this.memory.source]);
+    } else {
+      var energystores = Memory.rooms[room].stores.energyStores;
+
+      this.moveTo(energystores[0]);
+      this.transferEnergy(energystores[0]);
+    }
+  };
+};
+
+// RangeError: Maximum call stack size exceeded
+//     at arrayFilter (/opt/engine/node_modules/lodash/index.js:1384:13)
+//     at Function.filter (/opt/engine/node_modules/lodash/index.js:6309:14)
+//     at Creep.getActiveBodyparts (/opt/engine/dist/game/creeps.js:275:14)
+//     at Creep.moveTo (/opt/engine/dist/game/creeps.js:88:14)
+//     at Creep.harvest (main:376:12)
+//     at Creep.harvest (main:377:12)
+//     at Creep.harvest (main:377:12)
+//     at Creep.harvest (main:377:12)
+//     at Creep.harvest (main:377:12)
+module.exports = exports['default'];
+},{}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -313,41 +397,7 @@ exports["default"] = function () {
 };
 
 module.exports = exports["default"];
-},{}],12:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _queriesEnergyStorage = require('../queries/energy-storage');
-
-var _queriesEnergyStorage2 = _interopRequireDefault(_queriesEnergyStorage);
-
-var _queriesEnergySources = require('../queries/energy-sources');
-
-var _queriesEnergySources2 = _interopRequireDefault(_queriesEnergySources);
-
-exports['default'] = function () {
-  Creep.prototype.harvest = function () {
-    var source = this.memory.source || 0;
-    var sources = (0, _queriesEnergySources2['default'])(this.room);
-
-    if (this.carry.energy < this.carryCapacity) {
-      this.moveTo(sources[this.memory.source]);
-      this.harvest(sources[this.memory.source]);
-    } else {
-      var energystores = (0, _queriesEnergyStorage2['default'])(this.room).energyStores;
-      this.moveTo(energystores[0]);
-      this.transferEnergy(energystores[0]);
-    }
-  };
-};
-
-module.exports = exports['default'];
-},{"../queries/energy-sources":5,"../queries/energy-storage":6}],13:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -360,9 +410,9 @@ var _defend = require('./defend');
 
 var _defend2 = _interopRequireDefault(_defend);
 
-var _harvest = require('./harvest');
+var _collect = require('./collect');
 
-var _harvest2 = _interopRequireDefault(_harvest);
+var _collect2 = _interopRequireDefault(_collect);
 
 var _recharge = require('./recharge');
 
@@ -385,13 +435,13 @@ var _war = require('./war');
 var _war2 = _interopRequireDefault(_war);
 
 exports.defend = _defend2['default'];
-exports.harvest = _harvest2['default'];
+exports.collect = _collect2['default'];
 exports.recharge = _recharge2['default'];
 exports.upkeep = _upkeep2['default'];
 exports.spawn = _spawn2['default'];
 exports.sustain = _sustain2['default'];
 exports.war = _war2['default'];
-},{"./defend":11,"./harvest":12,"./recharge":14,"./spawn":15,"./sustain":16,"./upkeep":17,"./war":18}],14:[function(require,module,exports){
+},{"./collect":11,"./defend":12,"./recharge":14,"./spawn":15,"./sustain":16,"./upkeep":17,"./war":18}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -448,6 +498,8 @@ exports["default"] = function (room, unitCount) {
 
 module.exports = exports["default"];
 },{}],17:[function(require,module,exports){
+// TODO: Refactor to read from Memory.
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

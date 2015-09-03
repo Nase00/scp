@@ -1,3 +1,5 @@
+// TODO: Refactor to read from Memory.
+
 import structuresNeedingConstruction from '../queries/construction-sites';
 import structuresNeedingRepair from '../queries/damaged-structures';
 

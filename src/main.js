@@ -1,15 +1,18 @@
+// Load queries
+import stores from './queries/energy-storage';
+import sources from './queries/energy-sources';
+
 // Load prototypes
 import {
   defend,
-  harvest,
+  collect,
   recharge,
   upkeep,
   war,
   spawn } from './tasks';
 
 // Load room subroutines
-import { W17N4 } from './rooms';
-import { W17N3 } from './rooms';
+import { W17N4, W17N3 } from './rooms';
 
 export default () => {
   // Clean memory 
@@ -19,9 +22,13 @@ export default () => {
     }
   }
 
+  // Execute queries
+  stores();
+  sources();
+
   // Execute prototypes
   defend();
-  harvest();
+  collect();
   recharge();
   upkeep();
   spawn();
@@ -36,7 +43,7 @@ export default () => {
     let creep = Game.creeps[name];
     switch (creep.memory.role) {
       case 'harvester':
-        creep.harvest();
+        creep.collect();
         break;
       // case 'forager':
       //   creep.forage();
@@ -54,8 +61,8 @@ export default () => {
       // case 'warrior':
       //   creep.war();
       //   break;
-      default:
-        console.log('Creep lacks recognized role!');
+      // default:
+      //   console.log('Creep lacks recognized role!');
     }
   }
 };

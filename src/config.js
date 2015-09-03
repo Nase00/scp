@@ -1,7 +1,7 @@
 export const rooms = {
-  W17N5: "[W17N5]",
-  W17N3: "[W17N3]",
-  W18N4: "[W18N4]"
+  W17N3: 'W17N3',
+  W17N4: 'W17N4',
+  W18N4: 'W18N4'
 };
 
 export const spawns = [
