@@ -1,0 +1,25 @@
+{
+  "name": "scp",
+  "version": "0.0.1",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "lib": "rimraf lib && babel src -d lib",
+    "bundle": "browserify main.js -o bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nase00/scp.git"
+  },
+  "author": "Sean Owiecki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nase00/scp/issues"
+  },
+  "homepage": "https://github.com/Nase00/scp",
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babelify": "^6.3.0",
+    "rimraf": "^2.4.3"
+  }
+}

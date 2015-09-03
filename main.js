@@ -1,2 +1,1 @@
-require('custom-script');
-require('self-sustain');
+var script = require('./lib/main')();
