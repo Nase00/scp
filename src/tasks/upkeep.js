@@ -1,21 +1,17 @@
-// TODO: Refactor to read from Memory.
-
-import structuresNeedingConstruction from '../queries/construction-sites';
-import structuresNeedingRepair from '../queries/damaged-structures';
-
 export default () => {
   Creep.prototype.upkeep = () => {
-    let source = this.memory.source || 0;
+    let structureNeedingRepair = Game.getObjectById(Memory.rooms[this.room.name].structuresNeedingRepair[this.memory.source || 0]);
+    let structureNeedingConstruction = Game.getObjectById(Memory.rooms[this.room.name].structuresNeedingConstruction[this.memory.source || 0]);
 
-    if (structuresNeedingRepair(this.room).length) {
-      this.moveTo(structuresNeedingRepair[source]);
-      this.repair(structuresNeedingRepair[source]);
-    } else if (structuresNeedingConstruction(this.room).length) {
-      this.moveTo(structuresNeedingConstruction[source]);
-      this.build(structuresNeedingConstruction[source]);
+    if (structureNeedingRepair) {
+      this.moveTo(structuresNeedingRepair);
+      this.repair(structuresNeedingRepair);
+    } else if (structureNeedingConstruction) {
+      this.moveTo(structureNeedingConstruction);
+      this.build(structureNeedingConstruction);
     } else {
-      this.moveTo(this.source.controller);
-      this.upgradeController(this.source.controller);
+      this.moveTo(this.room.controller);
+      this.upgradeController(this.room.controller);
     }
   }
 };

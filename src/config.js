@@ -1,7 +1,16 @@
 export const rooms = {
-  W17N3: 'W17N3',
-  W17N4: 'W17N4',
-  W18N4: 'W18N4'
+  W17N3: {
+    name: 'W17N3',
+    defense: 4000
+  },
+  W17N4: {
+    name: 'W17N4',
+    defense: 14000
+  },
+  W18N4: {
+    name: 'W18N4',
+    defense: 9
+  }
 };
 
 export const spawns = [
@@ -27,16 +36,16 @@ export const unitTypeConstants = {
     bodyParts: [CARRY, CARRY, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE],
     name: 'worker' + currentTime,
     memory: {
-      role: '',
+      role: 'worker',
       born: currentTime,
       source: currentTime % 2
     }
   },
   guard: {
     bodyParts: [RANGED_ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE],
-    name: '',
+    name: 'Guard' + currentTime,
     memory: {
-      role: '',
+      role: 'Guard' + currentTime,
       born: currentTime,
       source: currentTime % 2,
       idlePos: "28, 29"

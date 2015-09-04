@@ -7,6 +7,9 @@
 // require('custom-script');
 // require('self-sustain');
 
+// Load memory primer
+import memory from './memory';
+
 // Load queries
 import stores from './queries/energy-storage';
 import sources from './queries/energy-sources';
@@ -15,6 +18,7 @@ import sources from './queries/energy-sources';
 import {
   defend,
   collect,
+  work,
   recharge,
   upkeep,
   war,
@@ -32,6 +36,9 @@ export default () => {
   }
 
   () => {
+    // Prime memory
+    memory();
+
     // Execute queries
     stores();
     sources()
@@ -39,6 +46,7 @@ export default () => {
     // Execute prototypes
     defend();
     collect();
+    work();
     recharge();
     upkeep();
     spawn();
@@ -59,21 +67,18 @@ export default () => {
       // case 'forager':
       //   creep.forage();
       //   break;
-      // case 'worker':
-      //   if (creep.carry.energy < creep.carryCapacity) {
-      //     creep.upkeep();
-      //   } else {
-      //     creep.recharge();    
-      //   }
-      //   break;
+      case 'builder':
+        creep.work();
+        break;
       // case 'guard':
       //   creep.defend();
       //   break;
       // case 'warrior':
       //   creep.war();
       //   break;
-      // default:
-      //   console.log('Creep lacks recognized role!');
+      default:
+        let roleAlert = '${creep} with role ${creep.memory.role} has no task!';
+        console.log(roleAlert);
     }
   }
 };

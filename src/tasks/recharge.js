@@ -2,9 +2,10 @@ import getEnergyStores from '../queries/energy-storage';
 
 export default () => {
   Creep.prototype.recharge = () => {
-    let source = getEnergyStores(this.room).fullEnergyStores[this.memory.source || energyForRecharging.length - 1];
+  	let fullEnergyStores = Memory.rooms[this.room.name].stores.fullEnergyStores;
+    let source = Game.getObjectById(fullEnergyStores[this.memory.source || fullEnergyStores.length - 1]);
 
-    creep.moveTo(source);
-    source.transferEnergy(creep);
+    this.moveTo(source);
+    source.transferEnergy(this);
   }
 };
