@@ -1,4 +1,4 @@
-import wallHealth from '../config';
+import { wallHealth } from '../config';
 
 export default (room) => {
   let structuresNeedingRepair = [];

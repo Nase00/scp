@@ -1,3 +1,12 @@
+// for(var i in Memory.creeps) {
+//     if (!Game.creeps[i]) {
+//         delete Memory.creeps[i];
+//     }
+// }
+
+// require('custom-script');
+// require('self-sustain');
+
 // Load queries
 import stores from './queries/energy-storage';
 import sources from './queries/energy-sources';
@@ -22,21 +31,23 @@ export default () => {
     }
   }
 
-  // Execute queries
-  stores();
-  sources();
+  () => {
+    // Execute queries
+    stores();
+    sources()
 
-  // Execute prototypes
-  defend();
-  collect();
-  recharge();
-  upkeep();
-  spawn();
-  war();
+    // Execute prototypes
+    defend();
+    collect();
+    recharge();
+    upkeep();
+    spawn();
+    war();
 
-  // Execute room subroutines
-  W17N4();
-  W17N3();
+    // Execute room subroutines
+    W17N4();
+    W17N3();
+  }();
 
   // Execute creep tasks
   for (let name in Game.creeps) {

@@ -1,14 +1,14 @@
 export default () => {
   Creep.prototype.collect = () => {
-    let source = this.memory.source || 0;
-    let room = this.room.name; //.toString().match(/.\d{2}.\d/)[0];
-console.log(this.say('Collecting'));
-    if (this.carry.energy < this.carryCapacity) {
-      let sources = Memory.rooms[room].sources;
-      console.log(sources)
+    this.say('C+');
 
-      this.moveTo(sources[this.memory.source]);
-      this.harvest(sources[this.memory.source]);
+    let room = this.room.name; //.toString().match(/.\d{2}.\d/)[0];
+
+    if (this.carry.energy < this.carryCapacity) {
+      let source = Game.getObjectById(Memory.rooms[room].sources[this.memory.source || 0]);
+
+      this.moveTo(source);
+      this.harvest(source);
     } else {
       let energystores = Memory.rooms[room].stores.energyStores;
       
@@ -17,14 +17,3 @@ console.log(this.say('Collecting'));
     }
   }
 };
-
-// RangeError: Maximum call stack size exceeded
-//     at arrayFilter (/opt/engine/node_modules/lodash/index.js:1384:13)
-//     at Function.filter (/opt/engine/node_modules/lodash/index.js:6309:14)
-//     at Creep.getActiveBodyparts (/opt/engine/dist/game/creeps.js:275:14)
-//     at Creep.moveTo (/opt/engine/dist/game/creeps.js:88:14)
-//     at Creep.harvest (main:376:12)
-//     at Creep.harvest (main:377:12)
-//     at Creep.harvest (main:377:12)
-//     at Creep.harvest (main:377:12)
-//     at Creep.harvest (main:377:12)
