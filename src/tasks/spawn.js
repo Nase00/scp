@@ -1,8 +1,8 @@
-import { unitTypeConstants } from '../config';
+import { creepTypeConstants } from '../config';
 
 export default () => {
-  Spawn.prototype.spawn = (unitType) => {
-    this.createCreep(unitTypeConstants[unitType]);
-    Memory.rooms[this.room].unitCount[unitType]++;
+  Spawn.prototype.spawn = (creepType) => {
+    this.createCreep(creepTypeConstants[creepType]);
+    Memory.rooms[this.room].creepCount[unitType]++;
   }
 };

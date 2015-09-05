@@ -8,12 +8,12 @@ import sustain from './sustain';
 import war from './war';
 
 export {
-	defend,
-	collect,
-	work,
-	recharge,
-	upkeep,
-	spawn,
-	sustain,
-	war
+  defend,
+  collect,
+  work,
+  recharge,
+  upkeep,
+  spawn,
+  sustain,
+  war
 };

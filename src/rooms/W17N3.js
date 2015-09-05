@@ -1,6 +1,7 @@
 // Secondary room
 
 import { sustain } from '../tasks';
+import { currentTime } from './config';
 
 const room = 'W17N3';
 
@@ -13,5 +14,5 @@ const unitCount = {
 };
 
 export default () => {
-	sustain(room, unitCount);
+  sustain(room, unitCount);
 };

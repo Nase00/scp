@@ -28,7 +28,7 @@ import {
 import { W17N4, W17N3 } from './rooms';
 
 export default () => {
-  // Clean memory 
+  // Clean memory
   for (let creep in Memory.creeps) {
     if (!Game.creeps[creep]) {
       delete Memory.creeps[creep];

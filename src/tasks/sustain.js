@@ -1,7 +1,7 @@
-export default (room, unitCount) => {
-	for (let creepType in Memory.rooms[room].unitCount) {
-		if (creepType < unitCount[creepType]) {
-			Game.rooms[room].spawn(creepType);
-		}
-	}
+export default (room, creepCount) => {
+  for (let creepType in Memory.rooms[room].creepCount) {
+    if (creepType < creepCount[creepType]) {
+      Game.rooms[room].spawn(creepType);
+    }
+  }
 };
