@@ -1,0 +1,27 @@
+{
+  "parser": "babel-eslint",
+  "ecmaFeatures": {
+    "modules": true
+  },
+  "env": {
+    "es6": true
+  },
+  "rules": {
+    "strict": 0,
+    "quotes": [
+      1,
+      "single"
+    ]
+  },
+  "globals": {
+  	"Game": true,
+    "Memory": true,
+    "MOVE": true,
+    "WORK": true,
+    "CARRY": true,
+    "ATTACK": true,
+    "RANGED_ATTACK": true,
+    "HEAL": true,
+    "TOUGH": true,
+  }
+}
