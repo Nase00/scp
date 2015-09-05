@@ -48,7 +48,7 @@ export const unitTypeConstants = {
       role: 'Guard' + currentTime,
       born: currentTime,
       source: currentTime % 2,
-      idlePos: "28, 29"
+      idlePos: '28, 29'
     }
   }
 };
