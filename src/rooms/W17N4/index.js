@@ -7,9 +7,11 @@ const roomName = 'W17N4';
 
 export default {
   name: roomName,
-  defense: 6000,
+  wallHealth: 40000,
+  roadHealth: 2000,
+  spawnIds: ['55defc603a94852a6ddf657e'],
   links: {
-    transmitterIds: ['55e4d627002b197809962d40'],
+    transmitterIds: ['55e4d627002b197809962d40', '55ebd31b30de2f106e550700'],
     receiverId: '55ea5371ec54fa140a98012e'
   },
   creepCount: {
@@ -41,7 +43,7 @@ export default {
           exit: '0, 40'
         },
         destination: {
-          name: 'W17N4',
+          name: 'W18N4',
           exit: '0, 40',
           source: '43, 44'
         }

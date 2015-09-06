@@ -1,4 +1,4 @@
-import { rooms, wallHealth, roadHealth } from '../config';
+import { rooms } from '../rooms';
 
 export default () => {
   for (let room in rooms) {
@@ -12,22 +12,22 @@ export default () => {
       filter: (structure) => {
         switch (structure.structureType) {
           case 'road':
-            if (structure.hits < roadHealth) {
+            if (structure.hits < room.roadHealth) {
               walls.push(structure.id);
             }
-          break;
+            break;
           case 'constructedWall':
-            if (structure.hits < wallHealth) {
+            if (structure.hits < room.wallHealth) {
               walls.push(structure.id);
             }
-          break;
+            break;
           case 'extension':
           case 'storage':
           case 'link':
             if (structure.hits < structure.hitsMax) {
               walls.push(structure.id);
             }
-          break;
+            break;
           default:
             others.push(structure.id);
         }

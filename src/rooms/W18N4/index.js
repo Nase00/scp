@@ -2,11 +2,16 @@
 
 import { currentTime } from '../../config';
 
+const roomName = 'W18N4';
+
 export default {
-  name: 'W18N4',
-  defense: 500,
+  name: roomName,
+  wallHealth: 500,
+  roadHealth: 500,
+  spawnIds: [],
+
   links: {
-    transmitter: [],
+    transmitterIds: [],
     receiverId: ''
   },
   creepCount: {

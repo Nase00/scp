@@ -18,6 +18,7 @@ import sources from './queries/energy-sources';
 import {
   defend,
   collect,
+  forage,
   work,
   recharge,
   upkeep,
@@ -29,7 +30,6 @@ import {
 import rooms from './rooms';
 
 export default () => {
-  console.log('test')
   // Clean memory
   for (let creep in Memory.creeps) {
     if (!Game.creeps[creep]) {
@@ -48,6 +48,7 @@ export default () => {
     // Execute prototypes
     defend();
     collect();
+    forage();
     work();
     recharge();
     upkeep();
@@ -55,9 +56,7 @@ export default () => {
     war();
 
     // Execute sustinence
-    for (let room in rooms) {
-      sustain(room);
-    }
+    sustain();
   }();
 
   // Execute creep tasks
@@ -68,9 +67,11 @@ export default () => {
         creep.collect();
         break;
       case 'forager':
+      case 'scout': // legacy
         creep.forage();
         break;
-      case 'builder':
+      case 'worker':
+      case 'builder': // legacy
         creep.work();
         break;
       // case 'guard':
@@ -80,7 +81,7 @@ export default () => {
       //   creep.war();
       //   break;
       default:
-        console.log(creep + ' with role ' + creep.memory.role + ' has no task!');
+        // console.log(creep + ' with role ' + creep.memory.role + ' has no task!');
     }
   }
 }();

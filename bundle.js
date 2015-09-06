@@ -50,7 +50,6 @@ var _rooms = require('./rooms');
 var _rooms2 = _interopRequireDefault(_rooms);
 
 exports['default'] = (function () {
-  console.log('test');
   // Clean memory
   for (var creep in Memory.creeps) {
     if (!Game.creeps[creep]) {
@@ -69,6 +68,7 @@ exports['default'] = (function () {
     // Execute prototypes
     (0, _tasks.defend)();
     (0, _tasks.collect)();
+    (0, _tasks.forage)();
     (0, _tasks.work)();
     (0, _tasks.recharge)();
     (0, _tasks.upkeep)();
@@ -76,9 +76,7 @@ exports['default'] = (function () {
     (0, _tasks.war)();
 
     // Execute sustinence
-    for (var room in _rooms2['default']) {
-      (0, _tasks.sustain)(room);
-    }
+    (0, _tasks.sustain)();
   })();
 
   // Execute creep tasks
@@ -88,10 +86,14 @@ exports['default'] = (function () {
       case 'harvester':
         creep.collect();
         break;
-      // case 'forager':
-      //   creep.forage();
-      //   break;
+      case 'forager':
+      case 'scout':
+        // legacy
+        creep.forage();
+        break;
+      case 'worker':
       case 'builder':
+        // legacy
         creep.work();
         break;
       // case 'guard':
@@ -101,13 +103,13 @@ exports['default'] = (function () {
       //   creep.war();
       //   break;
       default:
-        console.log(creep + ' with role ' + creep.memory.role + ' has no task!');
+      // console.log(creep + ' with role ' + creep.memory.role + ' has no task!');
     }
   }
 })();
 
 module.exports = exports['default'];
-},{"./memory":3,"./queries/energy-sources":4,"./queries/energy-storage":5,"./rooms":10,"./tasks":13}],3:[function(require,module,exports){
+},{"./memory":3,"./queries/energy-sources":4,"./queries/energy-storage":5,"./rooms":10,"./tasks":14}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -122,14 +124,15 @@ var _rooms2 = _interopRequireDefault(_rooms);
 
 exports['default'] = function () {
   for (var room in _rooms2['default']) {
-    Memory.rooms[room].structuresNeedingRepair = [];
-    Memory.rooms[room].structuresNeedingConstruction = [];
-    Memory.rooms[room].sources = [];
-    Memory.rooms[room].stores = {
-      energyStores: [],
-      fullEnergyStores: []
-    };
-    Memory.rooms[room].creepCount = {};
+    // Flush
+    Memory.rooms[room].structuresNeedingRepair.length = 0;
+    Memory.rooms[room].structuresNeedingConstruction.length = 0;
+    Memory.rooms[room].sources.length = 0;
+    Memory.rooms[room].stores.length = 0;
+
+    // Static
+    Memory.rooms[room].links = _rooms2['default'][room].links;
+    Memory.rooms[room].creepCount = _rooms2['default'][room].creepCount;
   }
 };
 
@@ -178,33 +181,45 @@ var _rooms2 = _interopRequireDefault(_rooms);
 
 exports['default'] = function () {
   var _loop = function (room) {
-    Memory.rooms[room].stores.energyStores.length = 0;
-    Memory.rooms[room].stores.fullEnergyStores.length = 0;
-
     // Transmitter link needs to be at absolute beginning of the array
-    if (_rooms2['default'][room].links.transmitters.length) {
-      for (transmitter in _rooms2['default'][room].links.transmitters) {
-        Memory.rooms[room].stores.fullEnergyStores.push(transmitter);
+    if (Memory.rooms[room].links.transmitterIds.length) {
+      for (var transmitterId in _rooms2['default'][room].links.transmitterIds) {
+        Memory.rooms[room].stores.energyStores.push(transmitterId);
       }
     }
 
+    var spawns = [];
+    var extensions = [];
+    var links = [];
+    var storages = [];
+
     Game.rooms[room].find(FIND_STRUCTURES, {
       filter: function filter(structure) {
-        var energyStorageTypes = ['extension', 'spawn'];
         if (structure.energy < structure.energyCapacity) {
           Memory.rooms[room].stores.energyStores.push(structure.id);
-        } else if (energyStorageTypes.indexOf(structure.structureType) !== -1) {
-          Memory.rooms[room].stores.fullEnergyStores.push(structure.id);
-        }
-        // Storage needs to be near the end of the array
-        if (structure.structureType === 'storage') {
-          Memory.rooms[room].stores.fullEnergyStores.push(structure.id);
+        } else {
+          switch (structure.structureType) {
+            case 'spawn':
+              spawns.push(structure.id);
+              break;
+            case 'extension':
+              extensions.push(structure.id);
+              break;
+            case 'link':
+              links.push(structure.id);
+              break;
+            case 'storage':
+              storages.push(structure.id);
+              break;
+          }
         }
       }
     });
 
+    Memory.rooms[room].stores.fullEnergyStores.concat(spawns, extensions, storages);
+
     // Receiver link needs to be at absolute end of the array
-    if (_rooms2['default'][room].links.receiverId.length) {
+    if (_rooms2['default'][room].links.receiverId.length && Game.getObjectById(_rooms2['default'][room].links.receiverId).energy > 0) {
       Memory.rooms[room].stores.fullEnergyStores.push(_rooms2['default'][room].links.receiverId);
     }
   };
@@ -226,11 +241,15 @@ Object.defineProperty(exports, '__esModule', {
 
 var _config = require('../../config');
 
+var roomName = 'W17N3';
+
 exports['default'] = {
-  name: 'W17N3',
-  defense: 4000,
+  name: roomName,
+  wallhealth: 4000,
+  roadHealth: 500,
+  spawnIds: ['55e5fc58d1239485043987a0'],
   links: {
-    transmitters: [],
+    transmitterIds: [],
     receiverId: ''
   },
   creepCount: {
@@ -293,7 +312,22 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 },{"../../config":1}],7:[function(require,module,exports){
-"use strict";
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = [{
+  name: 'W17N4',
+  type: 'origin',
+  exit: '0, 40'
+}, {
+  name: 'W18N4',
+  type: 'destination',
+  sourceId: '55c34a6b5be41a0a6e80badb',
+  exit: '49, 40'
+}];
+module.exports = exports['default'];
 },{}],8:[function(require,module,exports){
 // Primary room
 
@@ -315,9 +349,11 @@ var roomName = 'W17N4';
 
 exports['default'] = {
   name: roomName,
-  defense: 6000,
+  wallHealth: 40000,
+  roadHealth: 2000,
+  spawnIds: ['55defc603a94852a6ddf657e'],
   links: {
-    transmitters: ['55e4d627002b197809962d40'],
+    transmitterIds: ['55e4d627002b197809962d40', '55ebd31b30de2f106e550700'],
     receiverId: '55ea5371ec54fa140a98012e'
   },
   creepCount: {
@@ -344,7 +380,15 @@ exports['default'] = {
         role: 'forager' + _config.currentTime,
         born: _config.currentTime,
         source: _config.currentTime % 2,
-        path: _foragerPaths2['default']
+        origin: {
+          name: 'W17N4',
+          exit: '0, 40'
+        },
+        destination: {
+          name: 'W17N4',
+          exit: '0, 40',
+          source: '43, 44'
+        }
       }
     },
     worker: {
@@ -389,13 +433,18 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _config = require('../config');
+var _config = require('../../config');
+
+var roomName = 'W18N4';
 
 exports['default'] = {
-  name: 'W18N4',
-  defense: 500,
+  name: roomName,
+  wallHealth: 500,
+  roadHealth: 500,
+  spawnIds: [],
+
   links: {
-    transmitter: [],
+    transmitterIds: [],
     receiverId: ''
   },
   creepCount: {
@@ -448,7 +497,7 @@ exports['default'] = {
   }
 };
 module.exports = exports['default'];
-},{"../config":1}],10:[function(require,module,exports){
+},{"../../config":1}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -532,6 +581,49 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+exports['default'] = function () {
+  Creep.prototype.forage = function () {
+    this.say('F+');
+
+    var fullOfEnergy = this.carry.energy === this.carryCapacity;
+
+    switch (this.room.name) {
+      case this.memory.origin.name:
+        if (fullOfEnergy) {
+          var energystores = Memory.rooms[this.room.name].stores.energyStores;
+
+          this.moveTo(energyStores[0]);
+          this.transferEnergy(energyStores[0]);
+        } else {
+          this.moveTo(this.memory.origin.exit);
+        }
+        this.memory.passThroughRoomIndex = 0;
+        break;
+      case this.memory.destination:
+        if (fullOfEnergy) {
+          this.moveTo(this.memory.destination.exit);
+        } else {
+          this.moveTo(this.memory.destination.source);
+          this.harvest(this.memory.destination.source);
+        }
+        this.memory.passThroughRoomIndex = 0;
+        break;
+      default:
+        var direction = fullOfEnergy ? 'toOrigin' : 'toDestination';
+        this.moveTo(this.memory.passThroughRooms[this.memory.passThroughRoomIndex][direction]);
+        direct === 'toOrigin' ? this.memory.passThroughRoomIndex-- : this.memory.passThroughRoomIndex++;
+    }
+  };
+};
+
+module.exports = exports['default'];
+},{}],14:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _defend = require('./defend');
@@ -541,6 +633,10 @@ var _defend2 = _interopRequireDefault(_defend);
 var _collect = require('./collect');
 
 var _collect2 = _interopRequireDefault(_collect);
+
+var _forage = require('./forage');
+
+var _forage2 = _interopRequireDefault(_forage);
 
 var _work = require('./work');
 
@@ -568,13 +664,14 @@ var _war2 = _interopRequireDefault(_war);
 
 exports.defend = _defend2['default'];
 exports.collect = _collect2['default'];
+exports.forage = _forage2['default'];
 exports.work = _work2['default'];
 exports.recharge = _recharge2['default'];
 exports.upkeep = _upkeep2['default'];
 exports.spawn = _spawn2['default'];
 exports.sustain = _sustain2['default'];
 exports.war = _war2['default'];
-},{"./collect":11,"./defend":12,"./recharge":14,"./spawn":15,"./sustain":16,"./upkeep":17,"./war":18,"./work":19}],14:[function(require,module,exports){
+},{"./collect":11,"./defend":12,"./forage":13,"./recharge":15,"./spawn":16,"./sustain":17,"./upkeep":18,"./war":19,"./work":20}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -602,7 +699,7 @@ exports['default'] = function () {
 };
 
 module.exports = exports['default'];
-},{"../queries/energy-storage":5}],15:[function(require,module,exports){
+},{"../queries/energy-storage":5}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -618,14 +715,13 @@ var _rooms2 = _interopRequireDefault(_rooms);
 exports['default'] = function () {
   Spawn.prototype.spawn = function (creepType) {
     creep = _rooms2['default'][this.room].creepSchema[creepType];
-    console.log(creep);
-    this.createCreep(creep.bodyParts, creep.name, creep.memory);
+    console.log(this.createCreep(creep.bodyParts, creep.name, creep.memory));
     Memory.rooms[this.room].creepCount[creepType]++;
   };
 };
 
 module.exports = exports['default'];
-},{"../rooms":10}],16:[function(require,module,exports){
+},{"../rooms":10}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -638,20 +734,18 @@ var _rooms = require('../rooms');
 
 var _rooms2 = _interopRequireDefault(_rooms);
 
-exports['default'] = function (room) {
-  for (var _room in _rooms2['default']) {
-    for (var creepType in _rooms2['default'][_room].creepCount) {
-      if (creepType < _rooms2['default'][_room].creepCount[creepType]) {
+exports['default'] = function () {
+  for (var room in _rooms2['default']) {
+    for (var creepType in _rooms2['default'][room].creepCount) {
+      console.log('creepType', creepType);
+      if (creepType < _rooms2['default'][room].creepCount[creepType]) {
         var idleSpawn = this;
-        var spawns = Game.getObjectById(Memory.rooms[_room].spawns, {
-          filter: function filter(spawn) {
-            if (spawn.spawning) {
-              idleSpawn = spawn;
-              return;
-            }
-          }
-        });
-        console.log('Spawning ' + creepType + ' in room ' + _rooms2['default'][_room].name);
+        var spawns = [];
+        for (var spawnId in Memory.rooms[room].spawnIds) {
+          spawns.push(Game.getObjectById());
+        };
+        console.log(spawns);
+        console.log('Spawning ' + creepType + ' in room ' + _rooms2['default'][room].name);
         idleSpawn.spawn(creepType);
       }
     }
@@ -659,7 +753,7 @@ exports['default'] = function (room) {
 };
 
 module.exports = exports['default'];
-},{"../rooms":10}],17:[function(require,module,exports){
+},{"../rooms":10}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -685,7 +779,7 @@ exports["default"] = function () {
 };
 
 module.exports = exports["default"];
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -705,7 +799,7 @@ exports['default'] = function () {
 };
 
 module.exports = exports['default'];
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -723,7 +817,7 @@ exports["default"] = function () {
 };
 
 module.exports = exports["default"];
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var main = require('./lib/main');
 
-},{"./lib/main":2}]},{},[20]);
+},{"./lib/main":2}]},{},[21]);

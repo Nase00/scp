@@ -4,11 +4,8 @@ export default () => {
 
     let fullOfEnergy = this.carry.energy === this.carryCapacity;
 
-    let direction = fullOfEnergy ? 'toOrigin' : 'toDestination';
-    let passThroughRoomIndex = 0;
-
     switch (this.room.name) {
-      case this.memory.origin.name:
+      case this.memory.origin:
         if (fullOfEnergy) {
           let energystores = Memory.rooms[this.room.name].stores.energyStores;
 
@@ -17,6 +14,7 @@ export default () => {
         } else {
           this.moveTo(this.memory.origin.exit);
         }
+        this.memory.passThroughRoomIndex = 0;
       break;
       case this.memory.destination:
         if (fullOfEnergy) {
@@ -25,9 +23,12 @@ export default () => {
           this.moveTo(this.memory.destination.source);
           this.harvest(this.memory.destination.source);
         }
+        this.memory.passThroughRoomIndex = 0;
       break;
       default:
-        this.moveTo(this.memory.passThroughRooms[passThroughRoomIndex][direction]);
+        let direction = fullOfEnergy ? 'toOrigin' : 'toDestination';
+        this.moveTo(this.memory.passThroughRooms[this.memory.passThroughRoomIndex][direction]);
+        direct === 'toOrigin' ? this.memory.passThroughRoomIndex-- : this.memory.passThroughRoomIndex++;
     }
   }
 };
