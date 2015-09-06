@@ -1,6 +1,6 @@
 // Primary room
 
-import { currentTime } from '../config';
+import { currentTime } from '../../config';
 
 export default {
   name: 'W18N4',

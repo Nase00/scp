@@ -2,16 +2,18 @@ export default () => {
   Creep.prototype.collect = () => {
     this.say('C+');
 
-    let room = this.room.name; //.toString().match(/.\d{2}.\d/)[0];
-
     if (this.carry.energy < this.carryCapacity) {
-      let source = Game.getObjectById(Memory.rooms[room].sources[this.memory.source || 0]);
+      if (Memory.rooms[this.room.name].sources.length) {
+        let source = Game.getObjectById(Memory.rooms[this.room.name].sources[this.memory.source || 0]);
 
-      this.moveTo(source);
-      this.harvest(source);
+        this.moveTo(source);
+        this.harvest(source);
+      } else {
+        console.log('No available sources for ' + this.name + 'to harvest.');
+      }
     } else {
-      let energystores = Memory.rooms[room].stores.energyStores;
-      
+      let energystores = Memory.rooms[this.room.name].stores.energyStores;
+
       this.moveTo(energystores[0]);
       this.transferEnergy(energystores[0]);
     }

@@ -1,1 +1,1 @@
-var script = require('./lib/main')();
+var main = require('./lib/main');

@@ -22,12 +22,14 @@ import {
   recharge,
   upkeep,
   war,
-  spawn } from './tasks';
+  spawn,
+  sustain } from './tasks';
 
 // Load room subroutines
-import { W17N4, W17N3 } from './rooms';
+import rooms from './rooms';
 
 export default () => {
+  console.log('test')
   // Clean memory
   for (let creep in Memory.creeps) {
     if (!Game.creeps[creep]) {
@@ -52,9 +54,10 @@ export default () => {
     spawn();
     war();
 
-    // Execute room subroutines
-    W17N4();
-    W17N3();
+    // Execute sustinence
+    for (let room in rooms) {
+      sustain(room);
+    }
   }();
 
   // Execute creep tasks
@@ -64,9 +67,9 @@ export default () => {
       case 'harvester':
         creep.collect();
         break;
-      // case 'forager':
-      //   creep.forage();
-      //   break;
+      case 'forager':
+        creep.forage();
+        break;
       case 'builder':
         creep.work();
         break;
@@ -77,8 +80,7 @@ export default () => {
       //   creep.war();
       //   break;
       default:
-        let roleAlert = '${creep} with role ${creep.memory.role} has no task!';
-        console.log(roleAlert);
+        console.log(creep + ' with role ' + creep.memory.role + ' has no task!');
     }
   }
-};
+}();

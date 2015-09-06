@@ -6,7 +6,7 @@
   "scripts": {
     "lib": "rimraf lib && babel src -d lib",
     "lint": "eslint src/",
-    "bundle": "rimraf lib && babel src -d lib && browserify main.js -o main.js && replace -q 'undefined' 'this' main.js"
+    "bundle": "rimraf lib && babel src -d lib && browserify main.js -o bundle.js && replace -q 'undefined' 'this' bundle.js"
   },
   "repository": {
     "type": "git",

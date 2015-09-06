@@ -1,8 +1,10 @@
-import { creepTypeConstants } from '../config';
+import rooms from '../rooms';
 
 export default () => {
   Spawn.prototype.spawn = (creepType) => {
-    this.createCreep(creepTypeConstants[creepType]);
-    Memory.rooms[this.room].creepCount[unitType]++;
+    creep = rooms[this.room].creepSchema[creepType];
+    console.log(creep)
+    this.createCreep(creep.bodyParts, creep.name, creep.memory);
+    Memory.rooms[this.room].creepCount[creepType]++;
   }
 };

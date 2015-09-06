@@ -1,24 +1,24 @@
 // Primary room
 
-import { currentTime } from '../config';
+import { currentTime } from '../../config';
 
 export default {
-  name: 'W18N4',
-  defense: 500,
+  name: 'W17N3',
+  defense: 4000,
   links: {
-    transmitter: [],
+    transmitters: [],
     receiverId: ''
   },
   creepCount: {
-    harvesters: 2,
+    harvesters: 4,
     foragers: 0,
-    builders: 1,
-    guards: 0,
+    builders: 4,
+    guards: 1,
     warriors: 0
   },
   creepSchema: {
     harvester: {
-      bodyParts: [CARRY, WORK, MOVE],
+      bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE],
       name: 'harvester',
       memory: {
         role: 'harvester' + currentTime,
@@ -26,8 +26,17 @@ export default {
         source: currentTime % 2
       }
     },
+    forager: {
+      bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE, MOVE, MOVE],
+      name: 'forager',
+      memory: {
+        role: 'forager' + currentTime,
+        born: currentTime,
+        source: currentTime % 2
+      }
+    },
     worker: {
-      bodyParts: [CARRY, WORK, MOVE],
+      bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE],
       name: 'worker' + currentTime,
       memory: {
         role: 'worker',
@@ -37,7 +46,7 @@ export default {
       }
     },
     guard: {
-      bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
+      bodyParts: [RANGED_ATTACK, TOUGH, TOUGH, MOVE],
       name: 'Guard' + currentTime,
       memory: {
         role: 'Guard' + currentTime,
