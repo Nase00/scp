@@ -28,6 +28,9 @@ export default {
       memory: {
         role: 'harvester' + currentTime,
         born: currentTime,
+        origin: {
+          name: 'W17N4'
+        },
         source: currentTime % 2
       }
     },
@@ -37,6 +40,9 @@ export default {
       memory: {
         role: 'worker',
         born: currentTime,
+        origin: {
+          name: 'W17N4'
+        },
         source: currentTime % 2,
         willRepair: currentTime % 2
       }
@@ -47,6 +53,9 @@ export default {
       memory: {
         role: 'Guard' + currentTime,
         born: currentTime,
+        origin: {
+          name: 'W17N4'
+        },
         source: currentTime % 2,
         idlePos: '28, 29'
       }
@@ -57,6 +66,9 @@ export default {
       memory: {
         role: 'Warrior' + currentTime,
         born: currentTime,
+        origin: {
+          name: 'W17N4'
+        },
         source: currentTime % 2,
         idlePos: '28, 29'
       }

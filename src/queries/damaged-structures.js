@@ -1,4 +1,4 @@
-import { rooms } from '../rooms';
+import rooms from '../rooms';
 
 export default () => {
   for (let room in rooms) {

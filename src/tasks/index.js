@@ -4,9 +4,11 @@ import forage from './forage';
 import work from './work';
 import recharge from './recharge';
 import upkeep from './upkeep';
+import war from './war';
+import deathKnell from './death-knell';
 import spawn from './spawn';
 import sustain from './sustain';
-import war from './war';
+import linkTransfers from './link-transfers';
 
 export {
   defend,
@@ -15,7 +17,9 @@ export {
   work,
   recharge,
   upkeep,
+  war,
+  deathKnell,
   spawn,
   sustain,
-  war
+  linkTransfers
 };

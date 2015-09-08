@@ -3,11 +3,11 @@ export default () => {
     this.say('F+');
 
     let fullOfEnergy = this.carry.energy === this.carryCapacity;
-
+    
     switch (this.room.name) {
-      case this.memory.origin:
+      case this.memory.origin.name:
         if (fullOfEnergy) {
-          let energystores = Memory.rooms[this.room.name].stores.energyStores;
+          let energyStores = Memory.rooms[this.room.name].stores.energyStores;
 
           this.moveTo(energyStores[0]);
           this.transferEnergy(energyStores[0]);
@@ -16,12 +16,13 @@ export default () => {
         }
         this.memory.passThroughRoomIndex = 0;
       break;
-      case this.memory.destination:
+      case this.memory.destination.name:
         if (fullOfEnergy) {
           this.moveTo(this.memory.destination.exit);
         } else {
-          this.moveTo(this.memory.destination.source);
-          this.harvest(this.memory.destination.source);
+          let source = Game.getObjectById(this.memory.destination.sourceId);
+          this.moveTo(source);
+          this.harvest(source);
         }
         this.memory.passThroughRoomIndex = 0;
       break;

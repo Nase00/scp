@@ -14,7 +14,7 @@ export default {
     receiverId: ''
   },
   creepCount: {
-    harvesters: 4,
+    harvesters: 5,
     foragers: 0,
     builders: 4,
     guards: 1,
@@ -27,24 +27,33 @@ export default {
       memory: {
         role: 'harvester' + currentTime,
         born: currentTime,
+        origin: {
+          name: 'W17N4'
+        },
         source: currentTime % 2
       }
     },
-    forager: {
-      bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE, MOVE, MOVE],
-      name: 'forager',
-      memory: {
-        role: 'forager' + currentTime,
-        born: currentTime,
-        source: currentTime % 2
-      }
-    },
+    // forager: {
+    //   bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE, MOVE, MOVE],
+    //   name: 'forager',
+    //   memory: {
+    //     role: 'forager' + currentTime,
+    //     born: currentTime,
+      // origin: {
+      //   name: 'W17N4'
+      // },
+    //     source: currentTime % 2
+    //   }
+    // },
     worker: {
       bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE],
       name: 'worker' + currentTime,
       memory: {
         role: 'worker',
         born: currentTime,
+        origin: {
+          name: 'W17N4'
+        },
         source: currentTime % 2,
         willRepair: currentTime % 2
       }
@@ -55,6 +64,9 @@ export default {
       memory: {
         role: 'Guard' + currentTime,
         born: currentTime,
+        origin: {
+          name: 'W17N4'
+        },
         source: currentTime % 2,
         idlePos: '28, 29'
       }
@@ -65,6 +77,9 @@ export default {
       memory: {
         role: 'Warrior' + currentTime,
         born: currentTime,
+        origin: {
+          name: 'W17N4'
+        },
         source: currentTime % 2,
         idlePos: '28, 29'
       }

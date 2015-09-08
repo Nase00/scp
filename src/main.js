@@ -23,8 +23,10 @@ import {
   recharge,
   upkeep,
   war,
+  deathKnell,
   spawn,
-  sustain } from './tasks';
+  sustain,
+  linkTransfers } from './tasks';
 
 // Load room subroutines
 import rooms from './rooms';
@@ -43,7 +45,7 @@ export default () => {
 
     // Execute queries
     stores();
-    sources()
+    sources();
 
     // Execute prototypes
     defend();
@@ -54,9 +56,11 @@ export default () => {
     upkeep();
     spawn();
     war();
+    deathKnell();
 
-    // Execute sustinence
+    // Execute structure tasks
     sustain();
+    linkTransfers();
   }();
 
   // Execute creep tasks
@@ -64,6 +68,7 @@ export default () => {
     let creep = Game.creeps[name];
     switch (creep.memory.role) {
       case 'harvester':
+      case 'd_harvester': // legacy
         creep.collect();
         break;
       case 'forager':
@@ -72,6 +77,7 @@ export default () => {
         break;
       case 'worker':
       case 'builder': // legacy
+      case 'd_builder': // legacy
         creep.work();
         break;
       // case 'guard':
@@ -82,6 +88,11 @@ export default () => {
       //   break;
       default:
         // console.log(creep + ' with role ' + creep.memory.role + ' has no task!');
+    }
+
+    // Subtract creep from count immediately prior to death
+    if (creep.ticksToLive === 1) {
+      creep.deathKnell();
     }
   }
 }();

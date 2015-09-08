@@ -12,10 +12,10 @@ export default () => {
         console.log('No available sources for ' + this.name + 'to harvest.');
       }
     } else {
-      let energystores = Memory.rooms[this.room.name].stores.energyStores;
+      let energyStore = Game.getObjectById(Memory.rooms[this.room.name].stores.energyStores[0]);
 
-      this.moveTo(energystores[0]);
-      this.transferEnergy(energystores[0]);
+      this.moveTo(energyStore);
+      this.transferEnergy(energyStore);
     }
   }
 };
