@@ -14,18 +14,19 @@ export default {
     receiverId: '55ea5371ec54fa140a98012e'
   },
   creepCount: {
-    harvesters: 9,
-    foragers: 8,
-    builders: 6,
-    guards: 9,
-    warriors: 0
+    harvester: 9,
+    W18N4_forager: 8,
+    W17N3_forager: 8,
+    worker: 7,
+    guard: 9,
+    warrior: 0
   },
   creepSchema: {
     harvester: {
       bodyParts: [CARRY, CARRY, CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE],
-      name: 'harvester',
+      name: 'Harvester' + currentTime,
       memory: {
-        role: 'harvester' + currentTime,
+        role: 'harvester',
         born: currentTime,
         origin: {
           name: 'W17N4'
@@ -35,9 +36,9 @@ export default {
     },
     W18N4_forager: {
       bodyParts: [CARRY, CARRY, CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE],
-      name: 'forager',
+      name: 'Forager' + currentTime,
       memory: {
-        role: 'forager' + currentTime,
+        role: 'forager',
         born: currentTime,
         source: currentTime % 2,
         origin: {
@@ -54,9 +55,9 @@ export default {
     },
     W17N3_forager: {
       bodyParts: [CARRY, CARRY, CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE],
-      name: 'forager',
+      name: 'Forager' + currentTime,
       memory: {
-        role: 'forager' + currentTime,
+        role: 'forager',
         born: currentTime,
         source: currentTime % 2,
         origin: {
@@ -73,7 +74,7 @@ export default {
     },
     worker: {
       bodyParts: [CARRY, CARRY, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE],
-      name: 'worker' + currentTime,
+      name: 'Worker' + currentTime,
       memory: {
         role: 'worker',
         born: currentTime,
@@ -88,7 +89,7 @@ export default {
       bodyParts: [RANGED_ATTACK, RANGED_ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE],
       name: 'Guard' + currentTime,
       memory: {
-        role: 'Guard' + currentTime,
+        role: 'guard',
         born: currentTime,
         origin: {
           name: 'W17N4'
@@ -101,7 +102,7 @@ export default {
       bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
       name: 'Warrior' + currentTime,
       memory: {
-        role: 'Warrior' + currentTime,
+        role: 'warrior',
         born: currentTime,
         origin: {
           name: 'W17N4'

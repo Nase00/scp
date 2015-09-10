@@ -57,27 +57,27 @@ export default () => {
     spawn();
     war();
     deathKnell();
-
-    // Execute structure tasks
-    sustain();
-    linkTransfers();
   }();
 
   // Execute creep tasks
   for (let name in Game.creeps) {
     let creep = Game.creeps[name];
+
+    Memory.rooms[creep.room.name].actualCreepCount[creep.memory.role]++
+
     switch (creep.memory.role) {
       case 'harvester':
       case 'd_harvester': // legacy
         creep.collect();
         break;
       case 'forager':
-      case 'scout': // legacy
+      case 'scout': // NOTE: legacy
+      case 'explorer': // NOTE: legacy
         creep.forage();
         break;
       case 'worker':
-      case 'builder': // legacy
-      case 'd_builder': // legacy
+      case 'builder': // NOTE: legacy
+      case 'd_builder': // NOTE: legacy
         creep.work();
         break;
       // case 'guard':
@@ -90,9 +90,15 @@ export default () => {
         // console.log(creep + ' with role ' + creep.memory.role + ' has no task!');
     }
 
-    // Subtract creep from count immediately prior to death
-    if (creep.ticksToLive === 1) {
-      creep.deathKnell();
-    }
+    // Subtract creep from count immediately prior to death NOTE: may not be necessary
+    // if (creep.ticksToLive === 1) {
+    //   creep.deathKnell();
+    // }
   }
+
+  () => {
+    // Execute structure tasks
+    sustain();
+    linkTransfers();
+  };
 }();

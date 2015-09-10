@@ -75,15 +75,14 @@ exports['default'] = (function () {
     (0, _tasks.spawn)();
     (0, _tasks.war)();
     (0, _tasks.deathKnell)();
-
-    // Execute structure tasks
-    (0, _tasks.sustain)();
-    (0, _tasks.linkTransfers)();
   })();
 
   // Execute creep tasks
   for (var _name in Game.creeps) {
     var creep = Game.creeps[_name];
+
+    Memory.rooms[creep.room.name].actualCreepCount[creep.memory.role]++;
+
     switch (creep.memory.role) {
       case 'harvester':
       case 'd_harvester':
@@ -91,14 +90,15 @@ exports['default'] = (function () {
         creep.collect();
         break;
       case 'forager':
-      case 'scout':
-        // legacy
+      case 'scout': // NOTE: legacy
+      case 'explorer':
+        // NOTE: legacy
         creep.forage();
         break;
       case 'worker':
-      case 'builder': // legacy
+      case 'builder': // NOTE: legacy
       case 'd_builder':
-        // legacy
+        // NOTE: legacy
         creep.work();
         break;
       // case 'guard':
@@ -111,11 +111,17 @@ exports['default'] = (function () {
       // console.log(creep + ' with role ' + creep.memory.role + ' has no task!');
     }
 
-    // Subtract creep from count immediately prior to death
-    if (creep.ticksToLive === 1) {
-      creep.deathKnell();
-    }
+    // Subtract creep from count immediately prior to death NOTE: may not be necessary
+    // if (creep.ticksToLive === 1) {
+    //   creep.deathKnell();
+    // }
   }
+
+  (function () {
+    // Execute structure tasks
+    (0, _tasks.sustain)();
+    (0, _tasks.linkTransfers)();
+  });
 })();
 
 module.exports = exports['default'];
@@ -134,7 +140,16 @@ var _rooms2 = _interopRequireDefault(_rooms);
 
 exports['default'] = function () {
   for (var room in _rooms2['default']) {
-    // Flush
+    // Insert keys if not present
+    Memory.rooms[room].structuresNeedingRepair = [];
+    Memory.rooms[room].structuresNeedingConstruction = [];
+    Memory.rooms[room].sources = [];
+    Memory.rooms[room].stores = {
+      energyStores: [],
+      fullEnergyStores: []
+    };
+
+    // Flush values
     Memory.rooms[room].structuresNeedingRepair.length = 0;
     Memory.rooms[room].structuresNeedingConstruction.length = 0;
     Memory.rooms[room].sources.length = 0;
@@ -144,9 +159,13 @@ exports['default'] = function () {
     // Static
     Memory.rooms[room].links = _rooms2['default'][room].links;
     Memory.rooms[room].creepCount = _rooms2['default'][room].creepCount;
+    Memory.rooms[room].spawnIds = _rooms2['default'][room].spawnIds;
+    Memory.rooms[room].creepSchema = _rooms2['default'][room].creepSchema;
 
     // Persistent
-    Memory.rooms[room].actualCreepCount = {};
+    Memory.rooms[room].actualCreepCount = _.mapValues(_rooms2['default'][room].creepCount, function () {
+      return 0;
+    });
   }
 };
 
@@ -274,18 +293,17 @@ exports['default'] = {
     receiverId: ''
   },
   creepCount: {
-    harvesters: 5,
-    foragers: 0,
-    builders: 4,
-    guards: 1,
-    warriors: 0
+    harvester: 7,
+    worker: 6,
+    guard: 1,
+    warrior: 0
   },
   creepSchema: {
     harvester: {
       bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE],
-      name: 'harvester',
+      name: 'Harvester' + _config.currentTime,
       memory: {
-        role: 'harvester' + _config.currentTime,
+        role: 'harvester',
         born: _config.currentTime,
         origin: {
           name: 'W17N4'
@@ -295,9 +313,9 @@ exports['default'] = {
     },
     // forager: {
     //   bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE, MOVE, MOVE],
-    //   name: 'forager',
+    //   name: 'Forager' + currentTime,
     //   memory: {
-    //     role: 'forager' + currentTime,
+    //     role: 'forager',
     //     born: currentTime,
     // origin: {
     //   name: 'W17N4'
@@ -307,7 +325,7 @@ exports['default'] = {
     // },
     worker: {
       bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE],
-      name: 'worker' + _config.currentTime,
+      name: 'Worker' + _config.currentTime,
       memory: {
         role: 'worker',
         born: _config.currentTime,
@@ -322,7 +340,7 @@ exports['default'] = {
       bodyParts: [RANGED_ATTACK, TOUGH, TOUGH, MOVE],
       name: 'Guard' + _config.currentTime,
       memory: {
-        role: 'Guard' + _config.currentTime,
+        role: 'guard',
         born: _config.currentTime,
         origin: {
           name: 'W17N4'
@@ -335,7 +353,7 @@ exports['default'] = {
       bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
       name: 'Warrior' + _config.currentTime,
       memory: {
-        role: 'Warrior' + _config.currentTime,
+        role: 'warrior',
         born: _config.currentTime,
         origin: {
           name: 'W17N4'
@@ -370,18 +388,19 @@ exports['default'] = {
     receiverId: '55ea5371ec54fa140a98012e'
   },
   creepCount: {
-    harvesters: 9,
-    foragers: 8,
-    builders: 6,
-    guards: 9,
-    warriors: 0
+    harvester: 9,
+    W18N4_forager: 8,
+    W17N3_forager: 8,
+    worker: 7,
+    guard: 9,
+    warrior: 0
   },
   creepSchema: {
     harvester: {
       bodyParts: [CARRY, CARRY, CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE],
-      name: 'harvester',
+      name: 'Harvester' + _config.currentTime,
       memory: {
-        role: 'harvester' + _config.currentTime,
+        role: 'harvester',
         born: _config.currentTime,
         origin: {
           name: 'W17N4'
@@ -391,9 +410,9 @@ exports['default'] = {
     },
     W18N4_forager: {
       bodyParts: [CARRY, CARRY, CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE],
-      name: 'forager',
+      name: 'Forager' + _config.currentTime,
       memory: {
-        role: 'forager' + _config.currentTime,
+        role: 'forager',
         born: _config.currentTime,
         source: _config.currentTime % 2,
         origin: {
@@ -410,9 +429,9 @@ exports['default'] = {
     },
     W17N3_forager: {
       bodyParts: [CARRY, CARRY, CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE],
-      name: 'forager',
+      name: 'Forager' + _config.currentTime,
       memory: {
-        role: 'forager' + _config.currentTime,
+        role: 'forager',
         born: _config.currentTime,
         source: _config.currentTime % 2,
         origin: {
@@ -429,7 +448,7 @@ exports['default'] = {
     },
     worker: {
       bodyParts: [CARRY, CARRY, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE],
-      name: 'worker' + _config.currentTime,
+      name: 'Worker' + _config.currentTime,
       memory: {
         role: 'worker',
         born: _config.currentTime,
@@ -444,7 +463,7 @@ exports['default'] = {
       bodyParts: [RANGED_ATTACK, RANGED_ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE],
       name: 'Guard' + _config.currentTime,
       memory: {
-        role: 'Guard' + _config.currentTime,
+        role: 'guard',
         born: _config.currentTime,
         origin: {
           name: 'W17N4'
@@ -457,7 +476,7 @@ exports['default'] = {
       bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
       name: 'Warrior' + _config.currentTime,
       memory: {
-        role: 'Warrior' + _config.currentTime,
+        role: 'warrior',
         born: _config.currentTime,
         origin: {
           name: 'W17N4'
@@ -493,18 +512,17 @@ exports['default'] = {
     receiverId: ''
   },
   creepCount: {
-    harvesters: 2,
-    foragers: 0,
-    builders: 1,
-    guards: 0,
-    warriors: 0
+    harvester: 0,
+    worker: 0,
+    guard: 0,
+    warrior: 0
   },
   creepSchema: {
     harvester: {
       bodyParts: [CARRY, WORK, MOVE],
-      name: 'harvester',
+      name: 'Harvester' + _config.currentTime,
       memory: {
-        role: 'harvester' + _config.currentTime,
+        role: 'harvester',
         born: _config.currentTime,
         origin: {
           name: 'W17N4'
@@ -514,7 +532,7 @@ exports['default'] = {
     },
     worker: {
       bodyParts: [CARRY, WORK, MOVE],
-      name: 'worker' + _config.currentTime,
+      name: 'Worker' + _config.currentTime,
       memory: {
         role: 'worker',
         born: _config.currentTime,
@@ -529,7 +547,7 @@ exports['default'] = {
       bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
       name: 'Guard' + _config.currentTime,
       memory: {
-        role: 'Guard' + _config.currentTime,
+        role: 'guard',
         born: _config.currentTime,
         origin: {
           name: 'W17N4'
@@ -542,7 +560,7 @@ exports['default'] = {
       bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
       name: 'Warrior' + _config.currentTime,
       memory: {
-        role: 'Warrior' + _config.currentTime,
+        role: 'warrior',
         born: _config.currentTime,
         origin: {
           name: 'W17N4'
@@ -807,9 +825,10 @@ var _rooms2 = _interopRequireDefault(_rooms);
 
 exports['default'] = function () {
   Spawn.prototype.spawn = function (creepType) {
-    creep = _rooms2['default'][this.room].creepSchema[creepType];
+    var creep = _rooms2['default'][this.room.name].creepSchema[creepType];
+    console.log(_rooms2['default'][this.room.name], '===', creepType);
     console.log(this.createCreep(creep.bodyParts, creep.name, creep.memory));
-    Memory.rooms[this.room].actualCreepCount[creepType]++;
+    // Memory.rooms[this.room.name].actualCreepCount[creepType]++;
   };
 };
 
@@ -830,18 +849,22 @@ var _rooms2 = _interopRequireDefault(_rooms);
 exports['default'] = function () {
   for (var room in _rooms2['default']) {
     for (var creepType in _rooms2['default'][room].creepCount) {
-      console.log(Memory.rooms[room].actualCreepCount[creepType], _rooms2['default'][room].creepCount[creepType]);
+      // console.log(Memory.rooms[room].actualCreepCount[creepType], rooms[room].creepCount[creepType])
       if (Memory.rooms[room].actualCreepCount[creepType] < _rooms2['default'][room].creepCount[creepType]) {
         var idleSpawns = [];
         for (var spawnId in Memory.rooms[room].spawnIds) {
-          var spawn = Game.getObjectById(spawnId);
+          var spawn = Game.getObjectById(Memory.rooms[room].spawnIds[spawnId]);
           if (!spawn.spawning) {
             idleSpawns.push(spawn);
           }
         };
 
-        console.log('Spawning ' + creepType + ' in room ' + _rooms2['default'][room].name);
-        idleSpawn[0].spawn(creepType);
+        if (idleSpawns.length) {
+          console.log('Spawning ' + creepType + ' in room ' + _rooms2['default'][room].name);
+          idleSpawns[0].spawn(creepType);
+        } else {
+          console.log('Waiting for available spawner in ' + _rooms2['default'][room].name + ' to spawn ' + creepType);
+        }
       }
     }
   }

@@ -15,18 +15,17 @@ export default {
     receiverId: ''
   },
   creepCount: {
-    harvesters: 2,
-    foragers: 0,
-    builders: 1,
-    guards: 0,
-    warriors: 0
+    harvester: 0,
+    worker: 0,
+    guard: 0,
+    warrior: 0
   },
   creepSchema: {
     harvester: {
       bodyParts: [CARRY, WORK, MOVE],
-      name: 'harvester',
+      name: 'Harvester' + currentTime,
       memory: {
-        role: 'harvester' + currentTime,
+        role: 'harvester',
         born: currentTime,
         origin: {
           name: 'W17N4'
@@ -36,7 +35,7 @@ export default {
     },
     worker: {
       bodyParts: [CARRY, WORK, MOVE],
-      name: 'worker' + currentTime,
+      name: 'Worker' + currentTime,
       memory: {
         role: 'worker',
         born: currentTime,
@@ -51,7 +50,7 @@ export default {
       bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
       name: 'Guard' + currentTime,
       memory: {
-        role: 'Guard' + currentTime,
+        role: 'guard',
         born: currentTime,
         origin: {
           name: 'W17N4'
@@ -64,7 +63,7 @@ export default {
       bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
       name: 'Warrior' + currentTime,
       memory: {
-        role: 'Warrior' + currentTime,
+        role: 'warrior',
         born: currentTime,
         origin: {
           name: 'W17N4'

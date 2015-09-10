@@ -2,7 +2,16 @@ import rooms from './rooms';
 
 export default () => {
   for (let room in rooms) {
-    // Flush
+    // Insert keys if not present
+    Memory.rooms[room].structuresNeedingRepair = [];
+    Memory.rooms[room].structuresNeedingConstruction = [];
+    Memory.rooms[room].sources = [];
+    Memory.rooms[room].stores = {
+      energyStores: [],
+      fullEnergyStores: []
+    };
+
+    // Flush values
     Memory.rooms[room].structuresNeedingRepair.length = 0;
     Memory.rooms[room].structuresNeedingConstruction.length = 0;
     Memory.rooms[room].sources.length = 0;
@@ -12,8 +21,12 @@ export default () => {
     // Static
     Memory.rooms[room].links = rooms[room].links;
     Memory.rooms[room].creepCount = rooms[room].creepCount;
+    Memory.rooms[room].spawnIds = rooms[room].spawnIds;
+    Memory.rooms[room].creepSchema = rooms[room].creepSchema;
 
     // Persistent
-    Memory.rooms[room].actualCreepCount = {};
+    Memory.rooms[room].actualCreepCount = _.mapValues(rooms[room].creepCount, () => {
+      return 0;
+    });
   }
 };
