@@ -1,6 +1,7 @@
+
 module.exports = function() {
     var config = require('config');
-    
+
     var harvester = require('harvester');
     var scout = require('scout');
     var explorer = require('explorer');
@@ -8,26 +9,27 @@ module.exports = function() {
     var manager = require('manager');
     var guard = require('guard');
     var warrior = require('warrior');
-    
+
     var dHarvester = require('d_harvester');
-    
+    var dBuilder = require('d_builder');
+
     var harvesters = 0;
     var scouts = 0;
     var explorers = 0;
     var builders = 0;
-    var managers = 0;
     var guards = 0;
     var warriors = 0;
-    
+
     var dHarvesters = 0;
-    
+    var dBuilders = 0;
+
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];
 
         if (creep.pos == '[room W17N4 pos 37,19]') {
             creep.moveTo(36, 18);
         }
-        var customScript = require('custom-script');
+
         if (creep.memory.role == 'harvester') {
             harvester.harvest(creep, config.energyStores);
             harvesters++;
@@ -40,11 +42,12 @@ module.exports = function() {
         } else if (creep.memory.role == 'builder') {
             builder.build(creep, config.availableEnergy);
             builders++;
+        } else if (creep.memory.role == 'd_harvester') {
+            dHarvester.harvest(creep, Game.spawns.Duna);
+            dHarvesters++;
         } else if (creep.memory.role == 'd_builder') {
-            customScript(creep, config.availableEnergy);
-        } else if (creep.memory.role == 'manager') {
-            manager.manage(creep);
-            managers++;
+            dBuilder.build(creep, Game.spawns.Duna);
+            dBuilders++;
         } else if (creep.memory.role == 'guard') {
             guard.guard(creep);
             guards++;
@@ -52,11 +55,6 @@ module.exports = function() {
             warrior.warrior(creep);
             warriors++;
         }
-    }
-    
-    if (creep.memory.role == 'd_hharvester') {
-        dHarvester.harvest(creep, Game.spawns.Duna);
-        dHarvesters++;
     }
 
     if (harvesters < config.units.harvesters) {
@@ -67,22 +65,13 @@ module.exports = function() {
         explorer.spawn(config.spawn, config.rooms.room1);
     } else if (builders < config.units.builders) {
         builder.spawn(config.spawn);
-    // } else if (managers < config.units.managers) {
-    //     var managerName = "Manager" + managers + randID;
-    //     // TODO: Build energy managers
     } else if (guards < config.units.guards) {
         guard.spawn(config.spawn);
     } else if (warriors < config.units.warriors) {
         warrior.spawn(config.spawn);
     }
-    
+
     if (dHarvesters < config.units.dHarvesters) {
         dHarvester.spawn(Game.spawns.Duna);
     }
-    
-    // for(var i in Memory.creeps) {
-    //     if (!Game.creeps[i]) {
-    //         delete Memory.creeps[i];
-    //     }
-    // }
 }();

@@ -1,21 +1,18 @@
 var build = function(creep, availableEnergy) {
-    // if (creep.pos == "[room W17N4 pos 39,20]" || creep.pos == "[room W17N4 pos 40, 20]") {
-    //     creep.moveTo(40, 20);
-    // } else {
         creep.say('B');
-        if (creep.carry.energy <= 1) {
-    		creep.moveTo(availableEnergy[availableEnergy.length - 1]);
-    		availableEnergy[availableEnergy.length - 1].transferEnergy(creep);
+        if (creep.carry.energy < 1) {
+    		creep.moveTo(availableEnergy);
+    		availableEnergy.transferEnergy(creep);
     	} else {
     	    doWork();
     	}
     // }
-    
+
     function doWork() {
         var structuresNeedsRepair = [];
         creep.room.find(FIND_STRUCTURES, {
             filter: function(i) {
-                var repairTo = 4000;
+                var repairTo = 8000;
                 if (i.hitsMax > 1 && i.hitsMax > repairTo && i.hits < repairTo) {
                     // Beware spawn being pushed to Array#0
                     structuresNeedsRepair.push(i);
@@ -38,10 +35,11 @@ var build = function(creep, availableEnergy) {
 };
 
 var spawn = function(spawn) {
+    console.log('Spawning a dBuilder.');
     var currentTime = Date.now();
-    var builderName = 'Duna Builder' + currentTime;
+    var builderName = 'dBuilder' + currentTime;
     var willRepair = currentTime % 3;
-    spawn.createCreep([CARRY, CARRY, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], builderName, {role: 'd_builder', born: currentTime, willRepair: willRepair});
+    spawn.createCreep([CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE], builderName, {role: 'd_builder', born: currentTime, willRepair: willRepair});
 };
 
 module.exports = {

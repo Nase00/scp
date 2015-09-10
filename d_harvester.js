@@ -1,21 +1,34 @@
-var harvest = function(creep, energyStores) {
+var harvest = function(creep, source) {
+    var energyStores = [];
+    var availableEnergy = [];
+    creep.room.find(FIND_STRUCTURES, {
+        filter: function(i) {
+            if (i.energy < i.energyCapacity) {
+                energyStores.push(i);
+            }
+            if (i.energy > 0 && i.structureType == 'extension' || i.structureType == 'spawn') {
+                availableEnergy.push(i);
+            }
+        }
+    });
+
 	if (creep.carry.energy < creep.carryCapacity) {
 		var sources = creep.room.find(FIND_SOURCES_ACTIVE);
-		var source = creep.memory.source < 2 ? creep.memory.source : 1;
-		creep.moveTo(sources[source || 0]);
-		creep.harvest(sources[source || 0]);
+
+		creep.moveTo(sources[1]);
+		creep.harvest(sources[1]);
 	} else {
-		creep.moveTo(energyStores[source || 0]);
-		creep.transferEnergy(energyStores[source || 0]);
+		creep.moveTo(energyStores[0]);
+		creep.transferEnergy(energyStores[0]);
 	}
 };
 
 var spawn = function(spawn) {
     console.log('Spawning a d_harvester.');
     var currentTime =  Date.now();
-    var source = Math.floor(Math.random() * (1 - 0 + 1));
-    var name = 'Harvester' + currentTime + "source" + source;
-    spawn.createCreep([CARRY, WORK, WORK, MOVE], name, {role: 'harvester', born: currentTime, source: source });
+    var source = 1;
+    var name = 'dHarvester' + currentTime + "source" + source;
+    spawn.createCreep([CARRY, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE], name, {role: 'd_harvester', born: currentTime, source: source });
 };
 
 module.exports = {
