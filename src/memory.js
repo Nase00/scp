@@ -1,5 +1,7 @@
 import rooms from './rooms';
 
+import { constructionSites, damagedStructures } from './queries';
+
 export default () => {
   for (let room in rooms) {
     // Insert keys if not present
@@ -29,4 +31,6 @@ export default () => {
       return 0;
     });
   }
+  constructionSites();
+  damagedStructures();
 };

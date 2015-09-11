@@ -71,13 +71,9 @@ export default () => {
         creep.collect();
         break;
       case 'forager':
-      case 'scout': // NOTE: legacy
-      case 'explorer': // NOTE: legacy
         creep.forage();
         break;
       case 'worker':
-      case 'builder': // NOTE: legacy
-      case 'd_builder': // NOTE: legacy
         creep.work();
         break;
       // case 'guard':
@@ -96,9 +92,7 @@ export default () => {
     // }
   }
 
-  () => {
     // Execute structure tasks
     sustain();
-    linkTransfers();
-  };
+    // linkTransfers();
 }();

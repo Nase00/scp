@@ -1,4 +1,4 @@
-import { rooms } from '../config';
+import rooms from '../rooms';
 
 export default () => {
   for (let room in rooms) {

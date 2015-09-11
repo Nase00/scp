@@ -6,7 +6,7 @@ export default () => {
     if (Memory.rooms[room].links.transmitterIds.length) {
       for (let transmitterId in rooms[room].links.transmitterIds) {
         let transmitter = Game.getObjectById(rooms[room].links.transmitterIds[transmitterId]);
-        if (transmitter.energy !== transmitter.energyCapacity) {
+        if (transmitter && transmitter.energy !== transmitter.energyCapacity) {
           Memory.rooms[room].stores.energyStores.push(rooms[room].links.transmitterIds[transmitterId]);
         }
       }
@@ -20,7 +20,7 @@ export default () => {
     if (Game.rooms[room]) {
       Game.rooms[room].find(FIND_STRUCTURES, {
         filter: (structure) => {
-          if (structure.energyCapacity > 0 && structure.energy < structure.energyCapacity) {
+          if (structure.energyCapacity > 0 && structure.energy < 50) {
             Memory.rooms[room].stores.energyStores.push(structure.id);
           } else {
             switch (structure.structureType) {
@@ -44,7 +44,7 @@ export default () => {
       console.log('GAME OBJECT FORGOT ABOUT A ROOM!'); // Bug?
     }
 
-    Memory.rooms[room].stores.fullEnergyStores = spawns.concat(extensions, storages);
+    Memory.rooms[room].stores.fullEnergyStores = [].concat(spawns, extensions, storages);
 
     // Receiver link needs to be at absolute end of the array
     if (rooms[room].links.receiverId.length && Game.getObjectById(rooms[room].links.receiverId).energy > 0) {

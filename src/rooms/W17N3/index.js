@@ -6,22 +6,22 @@ const roomName = 'W17N3';
 
 export default {
   name: roomName,
-  wallhealth: 4000,
+  wallHealth: 40000,
   roadHealth: 500,
-  spawnIds: ['55e5fc58d1239485043987a0'],
+  spawnIds: ['55f315175101c33d1554fde2'],
   links: {
     transmitterIds: [],
     receiverId: ''
   },
   creepCount: {
-    harvester: 7,
-    worker: 6,
-    guard: 1,
+    harvester: 4,
+    worker: 3,
+    guard: 0,
     warrior: 0
   },
   creepSchema: {
     harvester: {
-      bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE],
+      bodyParts: [CARRY, WORK, MOVE],
       name: 'Harvester' + currentTime,
       memory: {
         role: 'harvester',
@@ -45,7 +45,7 @@ export default {
     //   }
     // },
     worker: {
-      bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE],
+      bodyParts: [CARRY, WORK, MOVE],
       name: 'Worker' + currentTime,
       memory: {
         role: 'worker',

@@ -8,7 +8,7 @@ export default () => {
         let idleSpawns = [];
         for (let spawnId in Memory.rooms[room].spawnIds) {
           let spawn = Game.getObjectById(Memory.rooms[room].spawnIds[spawnId]);
-          if (!spawn.spawning) {
+          if (spawn && !spawn.spawning) {
             idleSpawns.push(spawn);
           }
         };
