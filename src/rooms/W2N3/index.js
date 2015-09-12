@@ -1,46 +1,40 @@
 // Primary room
 
-'use strict';
+import { currentTime } from '../../config';
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
+const roomName = 'W2N3';
 
-var _config = require('../../config');
-
-var roomName = 'W18N4';
-
-exports['default'] = {
+export default {
   name: roomName,
   wallHealth: 10000,
   rampartHealth: 100000,
   roadHealth: 500,
-  spawnIds: ['55f38ed95101c33d1555064e'],
+  spawnIds: ['55f3a6fa5101c33d15550799'],
   links: {
     transmitterIds: [],
     receiverId: ''
   },
   creepCount: {
-    harvester: 6,
-    worker: 3,
-    // W18N4_forager: 1,
+    harvester: 3,
+    worker: 2,
+    // W2N3_forager: 1,
     guard: 0,
-    warrior: 7
+    warrior: 0
   },
   creepSchema: {
     harvester: {
-      bodyParts: [CARRY, WORK, MOVE],
-      name: 'Harvester' + _config.currentTime,
+      bodyParts: [CARRY, WORK, MOVE, CARRY, WORK, MOVE],
+      name: 'Harvester' + currentTime,
       memory: {
         role: 'harvester',
-        born: _config.currentTime,
+        born: currentTime,
         origin: {
-          name: 'W18N4'
+          name: 'W2N3'
         },
         source: 0
       }
     },
-    // W18N4_forager: {
+    // W2N3_forager: {
     //   bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE, MOVE, MOVE],
     //   name: 'Forager' + currentTime,
     //   memory: {
@@ -55,7 +49,7 @@ exports['default'] = {
     //       }
     //     },
     //     destination: {
-    //       name: 'W18N4',
+    //       name: 'W2N3',
     //       exit: {
     //         x: 31,
     //         y: 49
@@ -66,26 +60,26 @@ exports['default'] = {
     //   }
     // },
     worker: {
-      bodyParts: [CARRY, WORK, MOVE],
-      name: 'Worker' + _config.currentTime,
+      bodyParts: [CARRY, WORK, MOVE, CARRY, WORK, MOVE],
+      name: 'Worker' + currentTime,
       memory: {
         role: 'worker',
-        born: _config.currentTime,
+        born: currentTime,
         origin: {
-          name: 'W18N4'
+          name: 'W2N3'
         },
         source: 0,
-        willRepair: _config.currentTime % 2
+        willRepair: currentTime % 2
       }
     },
     guard: {
       bodyParts: [ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE],
-      name: 'Guard' + _config.currentTime,
+      name: 'Guard' + currentTime,
       memory: {
         role: 'guard',
-        born: _config.currentTime,
+        born: currentTime,
         origin: {
-          name: 'W18N4'
+          name: 'W2N3'
         },
         source: 2,
         idlePos: {
@@ -96,14 +90,14 @@ exports['default'] = {
     },
     warrior: {
       bodyParts: [ATTACK, TOUGH, TOUGH, MOVE, MOVE],
-      name: 'Warrior' + _config.currentTime,
+      name: 'Warrior' + currentTime,
       memory: {
         role: 'warrior',
-        born: _config.currentTime,
+        born: currentTime,
         origin: {
-          name: 'W18N4'
+          name: 'W2N3'
         },
-        source: _config.currentTime % 2,
+        source: currentTime % 2,
         idlePos: {
           x: 28,
           y: 29
@@ -112,4 +106,3 @@ exports['default'] = {
     }
   }
 };
-module.exports = exports['default'];

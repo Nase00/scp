@@ -22,6 +22,11 @@ export default () => {
               walls.push(structure.id);
             }
             break;
+          case 'rampart':
+            if (structure.hits < rooms[room].rampartHealth) {
+              walls.push(structure.id);
+            }
+            break;
           case 'extension':
           case 'storage':
           case 'link':

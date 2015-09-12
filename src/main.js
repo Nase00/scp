@@ -76,12 +76,12 @@ export default () => {
       case 'worker':
         creep.work();
         break;
-      // case 'guard':
-      //   creep.defend();
-      //   break;
-      // case 'warrior':
-      //   creep.war();
-      //   break;
+      case 'guard':
+        creep.defend();
+        break;
+      case 'warrior':
+        creep.war();
+        break;
       default:
         // console.log(creep + ' with role ' + creep.memory.role + ' has no task!');
     }

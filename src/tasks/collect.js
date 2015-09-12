@@ -4,7 +4,7 @@ export default () => {
 
     if (this.carry.energy < this.carryCapacity) {
       if (Memory.rooms[this.room.name].sources.length) {
-        let source = Game.getObjectById(Memory.rooms[this.room.name].sources[0]);
+        let source = Game.getObjectById(Memory.rooms[this.room.name].sources[this.memory.source || 0]);
         if (source) {
           this.moveTo(source);
           this.harvest(source);

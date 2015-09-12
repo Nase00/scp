@@ -9,11 +9,7 @@ export default () => {
       if (source) {
         this.moveTo(source);
         source.transferEnergy(this);
-      } else {
-        console.log('No available energy for ' + this.name + ' to recharge with')
       }
-    } else {
-      console.log('No available energy for ' + this.name + 'to recharge with');
     }
   }
 };

@@ -7,18 +7,19 @@ const roomName = 'W17N4';
 export default {
   name: roomName,
   wallHealth: 40000,
+  rampartHealth: 228000,
   roadHealth: 2000,
-  spawnIds: ['55defc603a94852a6ddf657e'],
+  spawnIds: [''],
   links: {
-    transmitterIds: ['55e4d627002b197809962d40', '55ebd31b30de2f106e550700'],
-    receiverId: '55ea5371ec54fa140a98012e'
+    transmitterIds: [''],
+    receiverId: ''
   },
   creepCount: {
-    harvester: 9,
-    W18N4_forager: 8,
-    W17N3_forager: 8,
-    worker: 7,
-    guard: 9,
+    harvester: 0,
+    W18N4_forager: 0,
+    W17N3_forager: 0,
+    worker: 0,
+    guard: 0,
     warrior: 0
   },
   creepSchema: {

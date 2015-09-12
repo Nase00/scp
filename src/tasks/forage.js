@@ -1,24 +1,22 @@
 export default () => {
   Creep.prototype.forage = () => {
-    this.say('F+');
-
     let fullOfEnergy = this.carry.energy === this.carryCapacity;
-    
+
     switch (this.room.name) {
       case this.memory.origin.name:
         if (fullOfEnergy) {
           let energyStores = Memory.rooms[this.room.name].stores.energyStores;
-
-          this.moveTo(energyStores[0]);
-          this.transferEnergy(energyStores[0]);
+          let energyStore = Game.getObjectById(energyStores[0]);
+          this.moveTo(energyStore);
+          this.transferEnergy(energyStore);
         } else {
-          this.moveTo(this.memory.origin.exit);
+          this.moveTo(this.memory.origin.exit.x, this.memory.origin.exit.y);
         }
         this.memory.passThroughRoomIndex = 0;
       break;
       case this.memory.destination.name:
         if (fullOfEnergy) {
-          this.moveTo(this.memory.destination.exit);
+          this.moveTo(this.memory.destination.exit.x, this.memory.destination.exit.y);
         } else {
           let source = Game.getObjectById(this.memory.destination.sourceId);
           this.moveTo(source);

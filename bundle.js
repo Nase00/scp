@@ -95,12 +95,12 @@ exports['default'] = (function () {
       case 'worker':
         creep.work();
         break;
-      // case 'guard':
-      //   creep.defend();
-      //   break;
-      // case 'warrior':
-      //   creep.war();
-      //   break;
+      case 'guard':
+        creep.defend();
+        break;
+      case 'warrior':
+        creep.war();
+        break;
       default:
       // console.log(creep + ' with role ' + creep.memory.role + ' has no task!');
     }
@@ -117,7 +117,7 @@ exports['default'] = (function () {
 })();
 
 module.exports = exports['default'];
-},{"./memory":3,"./queries/energy-sources":6,"./queries/energy-storage":7,"./rooms":12,"./tasks":17}],3:[function(require,module,exports){
+},{"./memory":3,"./queries/energy-sources":6,"./queries/energy-storage":7,"./rooms":10,"./tasks":15}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -135,6 +135,7 @@ var _queries = require('./queries');
 exports['default'] = function () {
   for (var room in _rooms2['default']) {
     // Insert keys if not present
+    Memory.rooms[room] = _rooms2['default'][room];
     Memory.rooms[room].structuresNeedingRepair = [];
     Memory.rooms[room].structuresNeedingConstruction = [];
     Memory.rooms[room].sources = [];
@@ -166,7 +167,7 @@ exports['default'] = function () {
 };
 
 module.exports = exports['default'];
-},{"./queries":8,"./rooms":12}],4:[function(require,module,exports){
+},{"./queries":8,"./rooms":10}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -195,7 +196,7 @@ exports['default'] = function () {
 };
 
 module.exports = exports['default'];
-},{"../rooms":12}],5:[function(require,module,exports){
+},{"../rooms":10}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -230,6 +231,11 @@ exports['default'] = function () {
               walls.push(structure.id);
             }
             break;
+          case 'rampart':
+            if (structure.hits < _rooms2['default'][room].rampartHealth) {
+              walls.push(structure.id);
+            }
+            break;
           case 'extension':
           case 'storage':
           case 'link':
@@ -252,7 +258,7 @@ exports['default'] = function () {
 };
 
 module.exports = exports['default'];
-},{"../rooms":12}],6:[function(require,module,exports){
+},{"../rooms":10}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -281,7 +287,7 @@ exports['default'] = function () {
 };
 
 module.exports = exports['default'];
-},{"../rooms":12}],7:[function(require,module,exports){
+},{"../rooms":10}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -314,9 +320,10 @@ exports['default'] = function () {
     if (Game.rooms[room]) {
       Game.rooms[room].find(FIND_STRUCTURES, {
         filter: function filter(structure) {
-          if (structure.energyCapacity > 0 && structure.energy < 50) {
+          if (structure.energyCapacity > 0 && structure.energy < structure.energyCapacity) {
             Memory.rooms[room].stores.energyStores.push(structure.id);
-          } else {
+          }
+          if (structure.energy >= 50) {
             switch (structure.structureType) {
               case 'spawn':
                 spawns.push(structure.id);
@@ -352,7 +359,7 @@ exports['default'] = function () {
 };
 
 module.exports = exports['default'];
-},{"../rooms":12}],8:[function(require,module,exports){
+},{"../rooms":10}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -385,20 +392,22 @@ Object.defineProperty(exports, '__esModule', {
 
 var _config = require('../../config');
 
-var roomName = 'W17N3';
+var roomName = 'W16N3';
 
 exports['default'] = {
   name: roomName,
-  wallHealth: 40000,
+  wallHealth: 10000,
+  rampartHealth: 100000,
   roadHealth: 500,
-  spawnIds: ['55f315175101c33d1554fde2'],
+  spawnIds: ['55f3c4395101c33d1555096c'],
   links: {
     transmitterIds: [],
     receiverId: ''
   },
   creepCount: {
-    harvester: 4,
+    harvester: 8,
     worker: 3,
+    // W16N3_forager: 1,
     guard: 0,
     warrior: 0
   },
@@ -410,21 +419,34 @@ exports['default'] = {
         role: 'harvester',
         born: _config.currentTime,
         origin: {
-          name: 'W17N4'
+          name: 'W16N3'
         },
         source: _config.currentTime % 2
       }
     },
-    // forager: {
+    // W16N3_forager: {
     //   bodyParts: [CARRY, CARRY, WORK, WORK, MOVE, MOVE, MOVE, MOVE],
     //   name: 'Forager' + currentTime,
     //   memory: {
     //     role: 'forager',
     //     born: currentTime,
-    // origin: {
-    //   name: 'W17N4'
-    // },
-    //     source: currentTime % 2
+    //     source: currentTime % 2,
+    //     origin: {
+    //       name: 'W17N3',
+    //       exit: {
+    //         x: 31,
+    //         y: 0
+    //       }
+    //     },
+    //     destination: {
+    //       name: 'W16N3',
+    //       exit: {
+    //         x: 31,
+    //         y: 49
+    //       },
+    //       sourceId: '55c34a6b5be41a0a6e80bf88'
+    //     },
+    //     passThroughRoomIndex: 0
     //   }
     // },
     worker: {
@@ -434,249 +456,52 @@ exports['default'] = {
         role: 'worker',
         born: _config.currentTime,
         origin: {
-          name: 'W17N4'
+          name: 'W16N3'
         },
         source: _config.currentTime % 2,
         willRepair: _config.currentTime % 2
       }
     },
     guard: {
-      bodyParts: [RANGED_ATTACK, TOUGH, TOUGH, MOVE],
+      bodyParts: [ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE],
       name: 'Guard' + _config.currentTime,
       memory: {
         role: 'guard',
         born: _config.currentTime,
         origin: {
-          name: 'W17N4'
+          name: 'W16N3'
         },
-        source: _config.currentTime % 2,
-        idlePos: '28, 29'
+        source: 2,
+        idlePos: {
+          x: 27,
+          y: 30
+        }
       }
     },
     warrior: {
-      bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
+      bodyParts: [ATTACK, TOUGH, TOUGH, MOVE, MOVE],
       name: 'Warrior' + _config.currentTime,
       memory: {
         role: 'warrior',
         born: _config.currentTime,
         origin: {
-          name: 'W17N4'
+          name: 'W16N3'
         },
         source: _config.currentTime % 2,
-        idlePos: '28, 29'
+        idlePos: {
+          x: 28,
+          y: 29
+        }
       }
     }
   }
 };
 module.exports = exports['default'];
 },{"../../config":1}],10:[function(require,module,exports){
-// Primary room
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _config = require('../../config');
-
-var roomName = 'W17N4';
-
-exports['default'] = {
-  name: roomName,
-  wallHealth: 40000,
-  roadHealth: 2000,
-  spawnIds: ['55defc603a94852a6ddf657e'],
-  links: {
-    transmitterIds: ['55e4d627002b197809962d40', '55ebd31b30de2f106e550700'],
-    receiverId: '55ea5371ec54fa140a98012e'
-  },
-  creepCount: {
-    harvester: 9,
-    W18N4_forager: 8,
-    W17N3_forager: 8,
-    worker: 7,
-    guard: 9,
-    warrior: 0
-  },
-  creepSchema: {
-    harvester: {
-      bodyParts: [CARRY, CARRY, CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE],
-      name: 'Harvester' + _config.currentTime,
-      memory: {
-        role: 'harvester',
-        born: _config.currentTime,
-        origin: {
-          name: 'W17N4'
-        },
-        source: _config.currentTime % 2
-      }
-    },
-    W18N4_forager: {
-      bodyParts: [CARRY, CARRY, CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE],
-      name: 'Forager' + _config.currentTime,
-      memory: {
-        role: 'forager',
-        born: _config.currentTime,
-        source: _config.currentTime % 2,
-        origin: {
-          name: 'W17N4',
-          exit: '0, 41'
-        },
-        destination: {
-          name: 'W18N4',
-          exit: '49, 40',
-          sourceId: '55c34a6b5be41a0a6e80badb'
-        },
-        passThroughRoomIndex: 0
-      }
-    },
-    W17N3_forager: {
-      bodyParts: [CARRY, CARRY, CARRY, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE],
-      name: 'Forager' + _config.currentTime,
-      memory: {
-        role: 'forager',
-        born: _config.currentTime,
-        source: _config.currentTime % 2,
-        origin: {
-          name: 'W17N4',
-          exit: '31, 49'
-        },
-        destination: {
-          name: 'W17N3',
-          exit: '31, 0',
-          sourceId: '55c34a6b5be41a0a6e80c3cc'
-        },
-        passThroughRoomIndex: 0
-      }
-    },
-    worker: {
-      bodyParts: [CARRY, CARRY, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE],
-      name: 'Worker' + _config.currentTime,
-      memory: {
-        role: 'worker',
-        born: _config.currentTime,
-        origin: {
-          name: 'W17N4'
-        },
-        source: _config.currentTime % 2,
-        willRepair: _config.currentTime % 2
-      }
-    },
-    guard: {
-      bodyParts: [RANGED_ATTACK, RANGED_ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE],
-      name: 'Guard' + _config.currentTime,
-      memory: {
-        role: 'guard',
-        born: _config.currentTime,
-        origin: {
-          name: 'W17N4'
-        },
-        source: _config.currentTime % 2,
-        idlePos: '28, 29'
-      }
-    },
-    warrior: {
-      bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
-      name: 'Warrior' + _config.currentTime,
-      memory: {
-        role: 'warrior',
-        born: _config.currentTime,
-        origin: {
-          name: 'W17N4'
-        },
-        source: _config.currentTime % 2,
-        idlePos: '28, 29'
-      }
-    }
-  }
-};
-module.exports = exports['default'];
-},{"../../config":1}],11:[function(require,module,exports){
-// Primary room
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _config = require('../../config');
-
-var roomName = 'W18N4';
-
-exports['default'] = {
-  name: roomName,
-  wallHealth: 500,
-  roadHealth: 500,
-  spawnIds: [],
-
-  links: {
-    transmitterIds: [],
-    receiverId: ''
-  },
-  creepCount: {
-    harvester: 0,
-    worker: 0,
-    guard: 0,
-    warrior: 0
-  },
-  creepSchema: {
-    harvester: {
-      bodyParts: [CARRY, WORK, MOVE],
-      name: 'Harvester' + _config.currentTime,
-      memory: {
-        role: 'harvester',
-        born: _config.currentTime,
-        origin: {
-          name: 'W17N4'
-        },
-        source: _config.currentTime % 2
-      }
-    },
-    worker: {
-      bodyParts: [CARRY, WORK, MOVE],
-      name: 'Worker' + _config.currentTime,
-      memory: {
-        role: 'worker',
-        born: _config.currentTime,
-        origin: {
-          name: 'W17N4'
-        },
-        source: _config.currentTime % 2,
-        willRepair: _config.currentTime % 2
-      }
-    },
-    guard: {
-      bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
-      name: 'Guard' + _config.currentTime,
-      memory: {
-        role: 'guard',
-        born: _config.currentTime,
-        origin: {
-          name: 'W17N4'
-        },
-        source: _config.currentTime % 2,
-        idlePos: '28, 29'
-      }
-    },
-    warrior: {
-      bodyParts: [RANGED_ATTACK, TOUGH, MOVE],
-      name: 'Warrior' + _config.currentTime,
-      memory: {
-        role: 'warrior',
-        born: _config.currentTime,
-        origin: {
-          name: 'W17N4'
-        },
-        source: _config.currentTime % 2,
-        idlePos: '28, 29'
-      }
-    }
-  }
-};
-module.exports = exports['default'];
-},{"../../config":1}],12:[function(require,module,exports){
+// import W17N3 from './W17N3';
+// import W17N4 from './W17N4';
+// import W18N4 from './W18N4';
+// import W2N3 from './W2N3';
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -685,25 +510,19 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _W17N3 = require('./W17N3');
+var _W16N3 = require('./W16N3');
 
-var _W17N32 = _interopRequireDefault(_W17N3);
-
-var _W17N4 = require('./W17N4');
-
-var _W17N42 = _interopRequireDefault(_W17N4);
-
-var _W18N4 = require('./W18N4');
-
-var _W18N42 = _interopRequireDefault(_W18N4);
+var _W16N32 = _interopRequireDefault(_W16N3);
 
 exports['default'] = {
-  W17N3: _W17N32['default']
+  // W17N3,
   // W17N4,
   // W18N4
+  // W2N3
+  W16N3: _W16N32['default']
 };
 module.exports = exports['default'];
-},{"./W17N3":9,"./W17N4":10,"./W18N4":11}],13:[function(require,module,exports){
+},{"./W16N3":9}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -716,7 +535,7 @@ exports['default'] = function () {
 
     if (this.carry.energy < this.carryCapacity) {
       if (Memory.rooms[this.room.name].sources.length) {
-        var source = Game.getObjectById(Memory.rooms[this.room.name].sources[0]);
+        var source = Game.getObjectById(Memory.rooms[this.room.name].sources[this.memory.source || 0]);
         if (source) {
           this.moveTo(source);
           this.harvest(source);
@@ -739,7 +558,7 @@ exports['default'] = function () {
 };
 
 module.exports = exports['default'];
-},{}],14:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -754,27 +573,27 @@ exports['default'] = function () {
 };
 
 module.exports = exports['default'];
-},{}],15:[function(require,module,exports){
-'use strict';
+},{}],13:[function(require,module,exports){
+"use strict";
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports['default'] = function () {
+exports["default"] = function () {
   Creep.prototype.defend = function (post) {
     var targets = this.room.find(FIND_HOSTILE_CREEPS);
     if (targets.length) {
       this.moveTo(targets[0]);
       this.rangedAttack(targets[0]);
     } else {
-      this.moveTo(this.memory.idlePos || '27, 24');
+      this.moveTo(this.memory.idlePos.x || 27, this.memory.idlePos.y || 24);
     }
   };
 };
 
-module.exports = exports['default'];
-},{}],16:[function(require,module,exports){
+module.exports = exports["default"];
+},{}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -783,25 +602,23 @@ Object.defineProperty(exports, '__esModule', {
 
 exports['default'] = function () {
   Creep.prototype.forage = function () {
-    this.say('F+');
-
     var fullOfEnergy = this.carry.energy === this.carryCapacity;
 
     switch (this.room.name) {
       case this.memory.origin.name:
         if (fullOfEnergy) {
           var energyStores = Memory.rooms[this.room.name].stores.energyStores;
-
-          this.moveTo(energyStores[0]);
-          this.transferEnergy(energyStores[0]);
+          var energyStore = Game.getObjectById(energyStores[0]);
+          this.moveTo(energyStore);
+          this.transferEnergy(energyStore);
         } else {
-          this.moveTo(this.memory.origin.exit);
+          this.moveTo(this.memory.origin.exit.x, this.memory.origin.exit.y);
         }
         this.memory.passThroughRoomIndex = 0;
         break;
       case this.memory.destination.name:
         if (fullOfEnergy) {
-          this.moveTo(this.memory.destination.exit);
+          this.moveTo(this.memory.destination.exit.x, this.memory.destination.exit.y);
         } else {
           var source = Game.getObjectById(this.memory.destination.sourceId);
           this.moveTo(source);
@@ -818,7 +635,7 @@ exports['default'] = function () {
 };
 
 module.exports = exports['default'];
-},{}],17:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -882,7 +699,7 @@ exports.deathKnell = _deathKnell2['default'];
 exports.spawn = _spawn2['default'];
 exports.sustain = _sustain2['default'];
 exports.linkTransfers = _linkTransfers2['default'];
-},{"./collect":13,"./death-knell":14,"./defend":15,"./forage":16,"./link-transfers":18,"./recharge":19,"./spawn":20,"./sustain":21,"./upkeep":22,"./war":23,"./work":24}],18:[function(require,module,exports){
+},{"./collect":11,"./death-knell":12,"./defend":13,"./forage":14,"./link-transfers":16,"./recharge":17,"./spawn":18,"./sustain":19,"./upkeep":20,"./war":21,"./work":22}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -892,7 +709,7 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = function () {};
 
 module.exports = exports["default"];
-},{}],19:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -914,17 +731,13 @@ exports['default'] = function () {
       if (source) {
         this.moveTo(source);
         source.transferEnergy(this);
-      } else {
-        console.log('No available energy for ' + this.name + ' to recharge with');
       }
-    } else {
-      console.log('No available energy for ' + this.name + 'to recharge with');
     }
   };
 };
 
 module.exports = exports['default'];
-},{"../queries/energy-storage":7}],20:[function(require,module,exports){
+},{"../queries/energy-storage":7}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -946,7 +759,7 @@ exports['default'] = function () {
 };
 
 module.exports = exports['default'];
-},{"../rooms":12}],21:[function(require,module,exports){
+},{"../rooms":10}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -962,7 +775,7 @@ var _rooms2 = _interopRequireDefault(_rooms);
 exports['default'] = function () {
   for (var room in _rooms2['default']) {
     for (var creepType in _rooms2['default'][room].creepCount) {
-      // console.log(Memory.rooms[room].actualCreepCount[creepType], rooms[room].creepCount[creepType])
+      // console.log(creepType, Memory.rooms[room].actualCreepCount[creepType], rooms[room].creepCount[creepType])
       if (Memory.rooms[room].actualCreepCount[creepType] < _rooms2['default'][room].creepCount[creepType]) {
         var idleSpawns = [];
         for (var spawnId in Memory.rooms[room].spawnIds) {
@@ -975,16 +788,18 @@ exports['default'] = function () {
         if (idleSpawns.length) {
           console.log('Spawning ' + creepType + ' in room ' + _rooms2['default'][room].name);
           idleSpawns[0].spawn(creepType);
-        } else {
-          console.log('Waiting for available spawner in ' + _rooms2['default'][room].name + ' to spawn ' + creepType);
+          return;
         }
+        // } else {
+        //   console.log('Waiting for available spawner in ' + rooms[room].name + ' to spawn ' + creepType);
+        // }
       }
     }
   }
 };
 
 module.exports = exports['default'];
-},{"../rooms":12}],22:[function(require,module,exports){
+},{"../rooms":10}],20:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1010,7 +825,7 @@ exports["default"] = function () {
 };
 
 module.exports = exports["default"];
-},{}],23:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1018,19 +833,38 @@ Object.defineProperty(exports, '__esModule', {
 });
 
 exports['default'] = function () {
-  Creep.prototype.war = function (post) {
+  Creep.prototype.war = function () {
     var targets = this.room.find(FIND_HOSTILE_CREEPS);
+
     if (targets.length) {
-      this.moveTo(targets[0]);
-      this.rangedAttack(targets[0]);
+      this.moveTo(Game.getObjectById('55f3999b08744ee2099ce6d4'));
+      this.rangedAttack(Game.getObjectById('55f3999b08744ee2099ce6d4'));
     } else {
-      this.moveTo(this.memory.idlePos || '27, 24');
+      if (this.room.name !== 'W17N4') {
+        this.moveTo(49, 39);
+      } else {
+        if (targets.length) {
+          this.rangedAttack(targets[0]);
+        }
+        //
+        // if (this.memory.source) {
+        //   // Block east entrance
+        this.moveTo(43, 11);
+        // } else {
+        //   // Block south entrance
+        //   this.moveTo(32, 47);
+        // }
+
+        // this.moveTo(this.room.controller);
+        // this.attack(this.room.controller);
+        // this.claimController(this.room.controller);
+      }
     }
   };
 };
 
 module.exports = exports['default'];
-},{}],24:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1039,16 +873,21 @@ Object.defineProperty(exports, "__esModule", {
 
 exports["default"] = function () {
   Creep.prototype.work = function () {
-    if (this.carry.energy === 0) {
+    var fullEnergyStores = Memory.rooms[this.room.name].stores.fullEnergyStores;
+    if (this.carry.energy === 0 && fullEnergyStores.length) {
       this.recharge();
-    } else {
+    } else if (this.carry.energy === this.carryCapacity || this.carry.energy > 0 && fullEnergyStores.length) {
       this.upkeep();
+    } else {
+      var source = Game.getObjectById(Memory.rooms[this.room.name].sources[this.memory.source || 0]);
+      this.moveTo(source);
+      this.harvest(source);
     }
   };
 };
 
 module.exports = exports["default"];
-},{}],25:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 var main = require('./lib/main');
 
-},{"./lib/main":2}]},{},[25]);
+},{"./lib/main":2}]},{},[23]);

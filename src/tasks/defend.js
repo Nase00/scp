@@ -5,7 +5,7 @@ export default () => {
       this.moveTo(targets[0]);
       this.rangedAttack(targets[0]);
     } else {
-      this.moveTo(this.memory.idlePos || '27, 24')
+      this.moveTo(this.memory.idlePos.x || 27, this.memory.idlePos.y || 24);
     }
   }
 };

@@ -5,6 +5,7 @@ import { constructionSites, damagedStructures } from './queries';
 export default () => {
   for (let room in rooms) {
     // Insert keys if not present
+    Memory.rooms[room] = rooms[room];
     Memory.rooms[room].structuresNeedingRepair = [];
     Memory.rooms[room].structuresNeedingConstruction = [];
     Memory.rooms[room].sources = [];
